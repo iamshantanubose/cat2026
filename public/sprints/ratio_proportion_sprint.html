@@ -6,7 +6,7 @@
 <title>Ratio &amp; Proportion — 30 Min Sprint</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --color-primary:#0D9488; --color-primary-dark:#0B7A70; --on-primary:#FFFFFF;
@@ -168,7 +168,17 @@
   .signal.warn{background:var(--color-warn-soft); border-color:#F3CB93; color:#8A4E08;}
   .signal.bad{background:var(--color-bad-soft); border-color:#F3AFAC; color:#A3272A;}
 
-  .review-section-label{font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--color-sub); margin:22px 0 12px;}
+  .review-section-head{display:flex; justify-content:space-between; align-items:center; margin:22px 0 12px; flex-wrap:wrap; gap:10px;}
+  .review-section-label{font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--color-sub); margin:0;}
+
+  .lang-toggle{display:inline-flex; background:var(--color-bg); border:1.5px solid var(--color-border-strong); border-radius:999px; padding:3px;}
+  .lang-btn{
+    appearance:none; border:none; background:transparent; cursor:pointer; font-family:"Lexend",sans-serif;
+    font-size:12.5px; font-weight:700; padding:6px 14px; border-radius:999px; color:var(--color-sub);
+    transition:background-color 150ms ease, color 150ms ease;
+  }
+  .lang-btn:focus-visible{outline:2px solid var(--color-primary); outline-offset:1px;}
+  .lang-btn.active{background:var(--color-primary); color:#fff;}
 
   .review-item{border:1px solid var(--color-border); border-radius:var(--radius-md); margin-bottom:12px; overflow:hidden;}
   .review-head{padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer; background:var(--color-card); transition:background-color 150ms ease;}
@@ -184,17 +194,37 @@
   .status-skipped{background:var(--color-warn-soft); color:var(--color-warn);}
   .review-body{padding:0 16px 18px; display:none; font-size:14.5px; color:var(--color-fg);}
   .review-body.open{display:block;}
-  .review-body .q-restate{color:var(--color-sub); font-size:14px; padding-bottom:12px; border-bottom:1px solid var(--color-border); margin-bottom:12px;}
-  .review-body .ans-row{display:flex; gap:16px; flex-wrap:wrap; margin:10px 0; font-size:13.5px;}
+  .review-body .q-restate{color:var(--color-sub); font-size:14px; padding-bottom:12px; border-bottom:1px solid var(--color-border); margin-bottom:14px;}
+  .review-body .ans-row{display:flex; gap:16px; flex-wrap:wrap; margin:0 0 16px; font-size:13.5px;}
   .review-body .ans-row .a-item{color:var(--color-sub);}
   .review-body .ans-row .a-item strong{color:var(--color-fg); font-weight:600;}
-  .review-body .sol-label{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--color-sub-2); margin:14px 0 6px;}
-  .review-body .expl{white-space:pre-line; line-height:1.65; font-size:14px;}
-  .review-body .trick{
-    display:flex; gap:10px; align-items:flex-start; background:rgba(13,148,136,.08); color:#0B4A44;
-    padding:12px 13px; border-radius:var(--radius-sm); margin-top:14px; font-size:13.8px; line-height:1.55;
+
+  .expl-block{margin-bottom:16px;}
+  .expl-block:last-child{margin-bottom:0;}
+  .expl-block .blk-label{
+    display:flex; align-items:center; gap:7px; font-size:11.5px; font-weight:700; text-transform:uppercase;
+    letter-spacing:.04em; color:var(--color-sub-2); margin-bottom:7px;
   }
-  .review-body .trick svg{width:17px; height:17px; flex-shrink:0; margin-top:1px; color:var(--color-primary);}
+  .expl-block .blk-label svg{width:14px; height:14px; color:var(--color-primary);}
+  .expl-block .blk-body{white-space:pre-line; line-height:1.65; font-size:14px;}
+
+  .hook-block{
+    display:flex; gap:10px; align-items:flex-start; background:rgba(234,88,12,.08); color:#8A3A0C;
+    padding:12px 13px; border-radius:var(--radius-sm); margin-bottom:16px; font-size:14px; line-height:1.55;
+    font-style:italic;
+  }
+  .hook-block svg{width:17px; height:17px; flex-shrink:0; margin-top:2px; color:var(--color-accent);}
+
+  .calc-block{
+    display:flex; gap:10px; align-items:flex-start; background:rgba(13,148,136,.08); color:#0B4A44;
+    padding:12px 13px; border-radius:var(--radius-sm); margin-top:16px; font-size:13.8px; line-height:1.55;
+  }
+  .calc-block svg{width:17px; height:17px; flex-shrink:0; margin-top:1px; color:var(--color-primary);}
+
+  /* Language switching — both languages render in the DOM, one hidden via CSS */
+  #resultScreen.lang-en .lang-hi-block{display:none;}
+  #resultScreen.lang-hi .lang-en-block{display:none;}
+  .lang-hi-block, #langHiBtn{font-family:"Noto Sans Devanagari","Source Sans 3",sans-serif;}
 
   .result-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:20px;}
 
@@ -294,7 +324,7 @@
   </div>
 
   <!-- RESULT SCREEN -->
-  <div class="card" id="resultScreen">
+  <div class="card lang-en" id="resultScreen">
     <h2>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M17 4h3a2 2 0 0 1-2 4h-1"/><path d="M7 4H4a2 2 0 0 0 2 4h1"/></svg>
       Sprint complete
@@ -306,7 +336,13 @@
       <div class="stat"><div class="num" id="rAccuracy">-</div><div class="lbl">Accuracy (attempted)</div></div>
     </div>
     <div id="signalBox"></div>
-    <div class="review-section-label">Question review</div>
+    <div class="review-section-head">
+      <div class="review-section-label">Question review · Explanation</div>
+      <div class="lang-toggle" role="group" aria-label="Explanation language">
+        <button type="button" class="lang-btn active" id="langEnBtn" onclick="setLang('en')">EN</button>
+        <button type="button" class="lang-btn" id="langHiBtn" onclick="setLang('hi')">हिं</button>
+      </div>
+    </div>
     <div id="reviewList"></div>
     <div class="result-actions">
       <button class="btn btn-secondary" onclick="location.reload()">
@@ -334,78 +370,108 @@ const QUESTIONS = [
     text: "The amount Neeta and Geeta together earn in a day equals what Sita alone earns in 6 days. The amount Sita and Neeta together earn in a day equals what Geeta alone earns in 2 days. The ratio of the daily earnings of the one who earns the most to that of the one who earns the least is",
     options: ["3 : 2", "11 : 7", "11 : 3", "7 : 3"],
     answer: "11 : 3",
-    trick: "Trick: convert word statements straight into two equations (n+g=6s, s+n=2g), subtract to kill one variable, then express everyone in terms of one letter. Word-ratio problems are almost always 'turn sentence into equation' in disguise.",
-    explain: "Let daily earnings be n (Neeta), g (Geeta), s (Sita).\nStatement 1: n + g = 6s\nStatement 2: s + n = 2g\nSubtract (2) - (1): s - g = 2g - 6s  →  7s = 3g\nSet g = 7a, so s = 3a.\nFrom n = 6s - g = 18a - 7a = 11a.\nSo earnings are n=11a, g=7a, s=3a → highest:lowest = 11:3."
+    hook: { en: "Three friends, three earning statements, one hidden ratio — this is CAT's favorite disguise: an equation wearing a word-problem costume.", hi: "तीन दोस्त, तीन कमाई के बयान, एक छुपा हुआ ratio — यह CAT का पसंदीदा भेस है: equation, word problem के कपड़ों में।" },
+    breakdown: { en: "What's given: two relationships between three people's daily earnings (Neeta, Geeta, Sita), stated as 'X and Y together = what Z alone earns in N days.' What's asked: the ratio of the highest daily earner to the lowest. Break it into: (1) turn sentence 1 into an equation, (2) turn sentence 2 into an equation, (3) solve the two-equation system for a ratio.", hi: "क्या दिया है: तीन लोगों (नीता, गीता, सीता) की daily earnings के बीच दो relationships, इस तरह बताई गई हैं — 'X और Y मिलकर उतना कमाते हैं जितना Z अकेले N दिनों में कमाता है।' क्या पूछा है: सबसे ज़्यादा और सबसे कम कमाने वाले का ratio। इसे तोड़ें: (1) पहले statement को equation बनाएं, (2) दूसरे statement को equation बनाएं, (3) दो equations को solve करके ratio निकालें।" },
+    approach: { en: "Assign variables n, g, s to the three daily earnings. Convert each English sentence literally into an equation — 'A and B together earn what C earns in N days' becomes A + B = N×C. Once you have two equations in three unknowns, subtract them to eliminate one variable, then express everything as a multiple of a single letter.", hi: "तीनों daily earnings के लिए n, g, s variables रखें। हर sentence को literally equation में बदलें — 'A और B मिलकर उतना कमाते हैं जितना C, N दिनों में कमाता है' यह बनता है A + B = N×C। दो equations तीन unknowns में मिलने पर, एक variable हटाने के लिए उन्हें subtract करें, फिर सब कुछ एक ही letter के multiple में लिखें।" },
+    steps: { en: "Step 1 — Translate: 'Neeta and Geeta together earn what Sita earns in 6 days' → n + g = 6s.\nStep 2 — Translate: 'Sita and Neeta together earn what Geeta earns in 2 days' → s + n = 2g.\nStep 3 — Subtract statement 1 from statement 2: (s+n) - (n+g) = 2g - 6s → s - g = 2g - 6s → 7s = 3g. This is the moment the two unknowns collapse into a clean ratio between g and s.\nStep 4 — Assign a base variable: let g = 7a, so s = 3a (since 7s=3g means s = 3g/7 = 3a when g=7a).\nStep 5 — Back-substitute into n + g = 6s to find n: n = 6s - g = 6(3a) - 7a = 18a - 7a = 11a.", hi: "Step 1 — अनुवाद करें: 'नीता और गीता मिलकर उतना कमाते हैं जितना सीता 6 दिनों में' → n + g = 6s।\nStep 2 — अनुवाद करें: 'सीता और नीता मिलकर उतना कमाते हैं जितना गीता 2 दिनों में' → s + n = 2g।\nStep 3 — statement 2 में से statement 1 घटाएं: (s+n) - (n+g) = 2g - 6s → s - g = 2g - 6s → 7s = 3g। यहीं पर दो unknowns सिमट कर g और s के बीच एक साफ ratio बन जाते हैं।\nStep 4 — base variable रखें: g = 7a मान लें, तो s = 3a (क्योंकि 7s=3g का मतलब है s = 3g/7 = 3a जब g=7a)।\nStep 5 — n + g = 6s में वापस डालकर n निकालें: n = 6s - g = 6(3a) - 7a = 18a - 7a = 11a।" },
+    calc: { en: "So the three daily earnings are n=11a, g=7a, s=3a. Highest is Neeta (11a), lowest is Sita (3a). Ratio = 11a : 3a = 11 : 3.", hi: "तो तीनों daily earnings हैं n=11a, g=7a, s=3a। सबसे ज़्यादा नीता (11a), सबसे कम सीता (3a)। Ratio = 11a : 3a = 11 : 3।" }
   },
   {
     id: 2, type: "mcq",
     text: "A mixture P is formed by removing a certain amount of coffee from a coffee jar and replacing the same amount with cocoa powder. The same amount is again removed from mixture P and replaced with same amount of cocoa powder to form a new mixture Q. If the ratio of coffee and cocoa in the mixture Q is 16 : 9, then the ratio of cocoa in mixture P to that in mixture Q is",
     options: ["1 : 3", "1 : 2", "5 : 9", "4 : 9"],
     answer: "5 : 9",
-    trick: "Trick: 'remove and replace' mixture problems — assume a clean total (here 25 units, since 16+9=25) and track what fraction is removed each round. Don't solve in percentages, solve in units.",
-    explain: "Final ratio coffee:cocoa = 16:9, so assume total = 25 units → coffee=16, cocoa=9 after 2 rounds.\nStart: 25 coffee, 0 cocoa.\nRound 1 removes x units, replaced with cocoa → mixture P has (25-x) coffee, x cocoa.\nRound 2 removes x units again (same fraction leaves), replaced with cocoa.\nSolving (25-x)(1 - x/25) = 16 gives x = 5.\nSo mixture P: coffee=20, cocoa=5. Mixture Q: coffee=16, cocoa=9.\nRatio of cocoa in P to cocoa in Q = 5 : 9."
+    hook: { en: "Two rounds of 'remove some, replace with cocoa' — the classic dilution trap where percentages fool you and units save you.", hi: "दो बार 'कुछ निकालो, cocoa से replace करो' — यह classic dilution trap है जहाँ percentages धोखा देते हैं और units बचाते हैं।" },
+    breakdown: { en: "Given: start with pure coffee, remove x units, replace with cocoa (twice, same x each time) to get mixture Q with coffee:cocoa = 16:9. Asked: ratio of cocoa in the first mixture (P, after round 1) to cocoa in Q (after round 2). Break it into: (1) fix a total using the final ratio, (2) track coffee remaining after each round, (3) solve for x, (4) read off cocoa amounts at both stages.", hi: "दिया है: शुरुआत pure coffee से, x units निकालकर cocoa से replace करो (दो बार, हर बार same x) ताकि मिश्रण Q में coffee:cocoa = 16:9 हो। पूछा है: पहले मिश्रण (P, round 1 के बाद) में cocoa का ratio, Q (round 2 के बाद) के cocoa से। तोड़ें: (1) final ratio से एक total तय करें, (2) हर round के बाद बचा coffee track करें, (3) x निकालें, (4) दोनों stages पर cocoa की मात्रा पढ़ें।" },
+    approach: { en: "Whenever a final ratio is given for a 'repeated removal' mixture problem, assume the total equals the sum of the ratio parts (here 16+9=25) — this makes every number in the problem a real quantity instead of an unknown fraction. Then apply the standard repeated-dilution idea: remaining original substance shrinks by the same fraction each round.", hi: "जब भी 'बार-बार निकालना' वाले mixture problem में final ratio दिया हो, total को ratio के parts का योग मान लें (यहाँ 16+9=25) — इससे problem का हर number एक असली quantity बन जाता है, unknown fraction नहीं। फिर standard repeated-dilution विचार लगाएं: बचा हुआ original substance हर round में उसी fraction से घटता है।" },
+    steps: { en: "Step 1 — Fix total: coffee:cocoa in Q is 16:9, so let total = 25 units, meaning Q has 16 coffee and 9 cocoa.\nStep 2 — Model round 1: start with 25 coffee, 0 cocoa. Remove x units (all coffee, since nothing else exists yet), replace with cocoa → mixture P has (25-x) coffee and x cocoa.\nStep 3 — Model round 2: from P, removing x units removes a fraction x/25 of everything present, including coffee. Coffee left after round 2 = (25-x) × (1 - x/25).\nStep 4 — This must equal Q's coffee, 16: (25-x)(1 - x/25) = 16. Solving this equation gives x = 5.\nStep 5 — Now read off cocoa at both stages: in P, cocoa = x = 5. In Q, cocoa = 9 (from step 1).", hi: "Step 1 — Total तय करें: Q में coffee:cocoa = 16:9 है, तो total = 25 units मान लें, यानी Q में 16 coffee और 9 cocoa है।\nStep 2 — Round 1 model करें: शुरुआत 25 coffee, 0 cocoa से। x units निकालें (सब coffee ही है अभी), cocoa से replace करें → मिश्रण P में (25-x) coffee और x cocoa है।\nStep 3 — Round 2 model करें: P में से x units निकालने पर मौजूद हर चीज़ का fraction x/25 निकलता है, coffee समेत। Round 2 के बाद बचा coffee = (25-x) × (1 - x/25)।\nStep 4 — यह Q के coffee, यानी 16 के बराबर होना चाहिए: (25-x)(1 - x/25) = 16। इसे solve करने पर x = 5 मिलता है।\nStep 5 — अब दोनों stages पर cocoa पढ़ें: P में, cocoa = x = 5। Q में, cocoa = 9 (step 1 से)।" },
+    calc: { en: "Ratio of cocoa in P to cocoa in Q = 5 : 9.", hi: "P में cocoa का Q में cocoa से ratio = 5 : 9।" }
   },
   {
     id: 3, type: "mcq",
     text: "In September, the incomes of Kamal, Amal and Vimal are in the ratio 8 : 6 : 5. They rent a house together, and Kamal pays 15%, Amal pays 12% and Vimal pays 18% of their respective incomes to cover the total house rent in that month. In October, the house rent remains unchanged while their incomes increase by 10%, 12% and 15%, respectively. In October, the percentage of their total income that will be paid as house rent, is nearest to",
     options: ["15.18", "13.26", "14.84", "12.75"],
     answer: "13.26",
-    trick: "Trick: assign the ratio to real numbers (80X, 60X, 50X) immediately — ratios are only useful once you turn them into actual quantities you can add and compare.",
-    explain: "Let incomes = 80X, 60X, 50X.\nSept rent paid = 15%(80X)+12%(60X)+18%(50X) = 12X+7.2X+9X = 28.2X. This is the fixed total rent.\nOct incomes = 88X, 67.2X, 57.5X → total = 212.7X.\nRent is unchanged at 28.2X.\n% of Oct income going to rent = 28.2X / 212.7X ≈ 13.26%."
+    hook: { en: "Same rent, bigger incomes — a percentage-of-a-changing-whole trap, and the fix is to freeze the rent as one fixed number.", hi: "किराया वही, income बड़ी — यह एक बदलते हुए whole का percentage trap है, और इलाज है किराए को एक fixed number मान लेना।" },
+    breakdown: { en: "Given: three people's September incomes in ratio 8:6:5, each paying a different % of their own income as rent, totaling the house rent. In October, incomes rise by different %, but total rent stays the same. Asked: what % of October's total income does that same rent represent. Break it into: (1) convert ratio to real September incomes, (2) compute actual rent paid by each in September and sum it, (3) compute October incomes, (4) express the fixed rent as % of new total income.", hi: "दिया है: तीन लोगों की September incomes ratio 8:6:5 में हैं, हर कोई अपनी income का अलग % rent के रूप में देता है, जो मिलकर घर का पूरा किराया बनता है। October में incomes अलग-अलग % से बढ़ती हैं, पर total rent वही रहता है। पूछा है: October की total income का कितना % वह वही rent है। तोड़ें: (1) ratio को असली September incomes में बदलें, (2) September में हर एक का असली rent निकालकर जोड़ें, (3) October incomes निकालें, (4) fixed rent को नई total income का % लिखें।" },
+    approach: { en: "Ratios alone can't be combined meaningfully with percentages until turned into real numbers. Assign the ratio to a variable (80X, 60X, 50X), compute real rent contributions in September to get one fixed rent value, then compute real October incomes and just divide.", hi: "जब तक ratio को असली numbers में नहीं बदला जाता, percentages के साथ उसे meaningfully नहीं जोड़ा जा सकता। ratio को variable में रखें (80X, 60X, 50X), September में असली rent contributions निकालकर एक fixed rent value पाएं, फिर October की असली incomes निकालकर सीधे divide करें।" },
+    steps: { en: "Step 1 — Assign real incomes: Kamal=80X, Amal=60X, Vimal=50X (using the 8:6:5 ratio scaled by 10X for easy %).\nStep 2 — Compute September rent: Kamal pays 15% of 80X = 12X, Amal pays 12% of 60X = 7.2X, Vimal pays 18% of 50X = 9X. Total rent = 12X+7.2X+9X = 28.2X — and this number is now fixed, it won't change in October.\nStep 3 — Compute October incomes using the given growth %: Kamal → 88X, Amal → 67.2X, Vimal → 57.5X. Total October income = 212.7X.\nStep 4 — Divide the fixed rent by the new total income: 28.2X / 212.7X ≈ 0.1326, i.e. 13.26%.", hi: "Step 1 — असली incomes रखें: Kamal=80X, Amal=60X, Vimal=50X (8:6:5 ratio को 10X से scale करके, % निकालना आसान हो)।\nStep 2 — September rent निकालें: Kamal 80X का 15% = 12X देता है, Amal 60X का 12% = 7.2X, Vimal 50X का 18% = 9X। Total rent = 12X+7.2X+9X = 28.2X — और यह number अब fixed है, October में नहीं बदलेगा।\nStep 3 — दिए गए growth % से October incomes निकालें: Kamal → 88X, Amal → 67.2X, Vimal → 57.5X। October की total income = 212.7X।\nStep 4 — fixed rent को नई total income से divide करें: 28.2X / 212.7X ≈ 0.1326, यानी 13.26%।" },
+    calc: { en: "October rent as % of October total income ≈ 13.26%.", hi: "October rent, October की total income का ≈ 13.26% है।" }
   },
   {
     id: 4, type: "tita",
     text: "A fruit seller has a total of 187 fruits consisting of apples, mangoes and oranges. The number of apples and mangoes are in the ratio 5 : 2. After she sells 75 apples, 26 mangoes and half of the oranges, the ratio of number of unsold apples to number of unsold oranges becomes 3 : 2. The total number of unsold fruits is",
     answer: "66",
-    trick: "Trick: keep apples/mangoes as 5x/2x, let oranges be the leftover (187 - 7x) — you don't need a separate variable for the third quantity when total is fixed.",
-    explain: "Apples = 5x, Mangoes = 2x, Oranges = 187 - 7x.\nAfter selling: Apples left = 5x-75, Oranges left = (187-7x)/2.\nGiven (5x-75) : (187-7x)/2 = 3 : 2\n→ 2(5x-75) = 3 × (187-7x)/2 → solving gives x = 21.\nUnsold apples = 30, unsold mangoes = 16, unsold oranges = 20.\nTotal unsold = 30+16+20 = 66."
+    hook: { en: "Three fruits, one fixed total, and a ratio that only covers two of them — the third one is just 'whatever's left.'", hi: "तीन फल, एक fixed total, और एक ratio जो सिर्फ दो को cover करता है — तीसरा बस 'जो बचा वो' है।" },
+    breakdown: { en: "Given: 187 total fruits (apples, mangoes, oranges), apples:mangoes = 5:2. After selling fixed amounts of apples and mangoes and half the oranges, unsold apples:unsold oranges = 3:2. Asked: total unsold fruits. Break it into: (1) express apples and mangoes using the given ratio, (2) express oranges as the leftover from the total, (3) write the after-selling ratio as an equation, (4) solve and add up all unsold quantities.", hi: "दिया है: कुल 187 फल (apples, mangoes, oranges), apples:mangoes = 5:2। कुछ fixed apples-mangoes बेचने और आधे oranges बेचने के बाद, unsold apples:unsold oranges = 3:2। पूछा है: कुल unsold फल। तोड़ें: (1) दिए गए ratio से apples और mangoes लिखें, (2) oranges को total से बचे हुए के रूप में लिखें, (3) बेचने के बाद वाले ratio को equation में लिखें, (4) solve करके सभी unsold quantities जोड़ें।" },
+    approach: { en: "With a fixed total and only one ratio given between two of three quantities, don't invent a third variable — the third quantity is just (total - the other two). Set up apples=5x, mangoes=2x, oranges=187-7x, then plug the post-sale numbers into the given ratio and solve for x.", hi: "जब total fixed हो और तीन में से सिर्फ दो के बीच ratio दिया हो, तीसरे के लिए नया variable मत बनाएं — तीसरी quantity बस (total - बाकी दो) है। apples=5x, mangoes=2x, oranges=187-7x रखें, फिर बेचने के बाद के numbers को दिए गए ratio में डालकर x निकालें।" },
+    steps: { en: "Step 1 — Set variables: apples = 5x, mangoes = 2x (from the 5:2 ratio), oranges = 187 - 7x (whatever's left of the fixed total).\nStep 2 — Apply the sales: unsold apples = 5x - 75, unsold oranges = (187-7x)/2 (half sold means half remains).\nStep 3 — Write the given ratio as an equation: (5x-75) / [(187-7x)/2] = 3/2. Cross-multiplying and simplifying gives 41x = 861, so x = 21.\nStep 4 — Compute each unsold quantity: unsold apples = 5(21)-75 = 30, unsold mangoes = 2(21)-26 = 16, unsold oranges = (187-147)/2 = 20.\nStep 5 — Add them: 30 + 16 + 20 = 66.", hi: "Step 1 — Variables रखें: apples = 5x, mangoes = 2x (5:2 ratio से), oranges = 187 - 7x (fixed total में से जो बचा)।\nStep 2 — बिक्री लगाएं: unsold apples = 5x - 75, unsold oranges = (187-7x)/2 (आधे बिके तो आधे बचे)।\nStep 3 — दिए गए ratio को equation में लिखें: (5x-75) / [(187-7x)/2] = 3/2। Cross-multiply और simplify करने पर 41x = 861 मिलता है, तो x = 21।\nStep 4 — हर unsold quantity निकालें: unsold apples = 5(21)-75 = 30, unsold mangoes = 2(21)-26 = 16, unsold oranges = (187-147)/2 = 20।\nStep 5 — इन्हें जोड़ें: 30 + 16 + 20 = 66।" },
+    calc: { en: "Total unsold fruits = 66.", hi: "कुल unsold फल = 66।" }
   },
   {
     id: 5, type: "mcq",
     text: "Rajesh and Vimal own 20 hectares and 30 hectares of agricultural land, respectively, which are entirely covered by wheat and mustard crops. The cultivation area of wheat and mustard in the land owned by Vimal are in the ratio of 5 : 3. If the total cultivation area of wheat and mustard are in the ratio 11 : 9, then the ratio of cultivation area of wheat and mustard in the land owned by Rajesh is",
     options: ["4 : 3", "7 : 9", "3 : 7", "1 : 1"],
     answer: "7 : 9",
-    trick: "Trick: split each person's land using their own ratio, add up to match the known combined total ratio, then back-solve for the missing person's split. Classic 'combined ratio, one part known' setup.",
-    explain: "Vimal's 30 ha in ratio 5:3 → wheat=18.75, mustard=11.25.\nLet Rajesh's 20 ha split as k:1 → wheat = 20k/(k+1), mustard = 20/(k+1).\nTotal wheat:mustard across both = 11:9.\nTotal wheat = 18.75 + 20k/(k+1), Total mustard = 11.25 + 20/(k+1).\nSetting the ratio to 11:9 and solving gives k = 7/9 → Rajesh's wheat:mustard = 7:9."
+    hook: { en: "Two farmers, two known splits, one combined target ratio — a 'reverse-engineer the missing split' problem.", hi: "दो किसान, दो जानी हुई splits, एक combined target ratio — यह एक 'गायब split को reverse-engineer करो' problem है।" },
+    breakdown: { en: "Given: Rajesh owns 20 ha, Vimal owns 30 ha, both split between wheat and mustard. Vimal's split is known (5:3). The combined wheat:mustard across both farmers is known (11:9). Asked: Rajesh's own wheat:mustard split. Break it into: (1) compute Vimal's actual wheat and mustard areas, (2) express Rajesh's split with an unknown ratio variable, (3) add both farmers' wheat and mustard to match the given combined ratio, (4) solve for Rajesh's ratio.", hi: "दिया है: Rajesh के पास 20 ha है, Vimal के पास 30 ha, दोनों wheat और mustard में बंटे हैं। Vimal का split पता है (5:3)। दोनों मिलाकर wheat:mustard पता है (11:9)। पूछा है: Rajesh का अपना wheat:mustard split। तोड़ें: (1) Vimal के असली wheat और mustard areas निकालें, (2) Rajesh के split को एक unknown ratio variable से लिखें, (3) दोनों किसानों के wheat-mustard जोड़कर दिए गए combined ratio से मिलाएं, (4) Rajesh का ratio निकालें।" },
+    approach: { en: "When one part of a combined ratio is known and the total combined ratio is known, treat the missing part's ratio as k:1, write both farmers' wheat and mustard as sums, then use the combined ratio equation to solve for k.", hi: "जब combined ratio का एक हिस्सा पता हो और पूरा combined ratio भी पता हो, गायब हिस्से के ratio को k:1 मानें, दोनों किसानों के wheat-mustard को sum के रूप में लिखें, फिर combined ratio वाले equation से k निकालें।" },
+    steps: { en: "Step 1 — Vimal's actual areas: 30 ha in ratio 5:3 → wheat = 30×5/8 = 18.75 ha, mustard = 30×3/8 = 11.25 ha.\nStep 2 — Let Rajesh's split be k:1 → wheat = 20k/(k+1), mustard = 20/(k+1).\nStep 3 — Add both farmers: total wheat = 18.75 + 20k/(k+1), total mustard = 11.25 + 20/(k+1).\nStep 4 — Set the ratio of these totals equal to 11:9 and solve — this gives k = 7/9.\nStep 5 — So Rajesh's wheat:mustard = k:1 = 7/9 : 1 = 7:9.", hi: "Step 1 — Vimal के असली areas: 30 ha, ratio 5:3 में → wheat = 30×5/8 = 18.75 ha, mustard = 30×3/8 = 11.25 ha।\nStep 2 — मान लें Rajesh का split k:1 है → wheat = 20k/(k+1), mustard = 20/(k+1)।\nStep 3 — दोनों किसानों को जोड़ें: total wheat = 18.75 + 20k/(k+1), total mustard = 11.25 + 20/(k+1)।\nStep 4 — इन totals के ratio को 11:9 के बराबर रखकर solve करें — इससे k = 7/9 मिलता है।\nStep 5 — तो Rajesh का wheat:mustard = k:1 = 7/9 : 1 = 7:9।" },
+    calc: { en: "Rajesh's wheat:mustard ratio = 7 : 9.", hi: "Rajesh का wheat:mustard ratio = 7 : 9।" }
   },
   {
     id: 6, type: "mcq",
     text: "The ratio of the number of students in the morning shift and afternoon shift of a school was 13 : 9. After 21 students moved from the morning shift to the afternoon shift, this ratio became 19 : 14. Next, some new students joined the morning and afternoon shifts in the ratio 3 : 8 and then the ratio of the number of students in the morning shift and the afternoon shift became 5 : 4. The number of new students who joined is",
     options: ["110", "88", "121", "99"],
     answer: "99",
-    trick: "Trick: multi-stage ratio-change problems — solve one stage at a time, convert to real numbers after stage 1 before touching stage 2. Don't try to carry k through both stages symbolically.",
-    explain: "Let morning=13k, afternoon=9k.\nAfter shift: (13k-21)/(9k+21) = 19/14 → solving gives k=63.\nSo morning=798, afternoon=588 (real numbers now, forget k).\nLet 3t, 8t join morning and afternoon.\n(798+3t)/(588+8t) = 5/4 → solving gives t=9.\nNew students joined = 3t+8t = 11t = 99."
+    hook: { en: "A ratio that changes twice in a row — solve it like a relay race, not a single sprint: finish stage one completely before starting stage two.", hi: "एक ratio जो लगातार दो बार बदलता है — इसे relay race की तरह solve करें, single sprint की तरह नहीं: stage two शुरू करने से पहले stage one पूरा खत्म करें।" },
+    breakdown: { en: "Given: morning:afternoon students start at 13:9. After 21 move from morning to afternoon, ratio becomes 19:14. Then new students join in ratio 3:8, and the final ratio becomes 5:4. Asked: how many new students joined. Break it into: (1) solve stage 1 (the 21-student move) to get real numbers, (2) solve stage 2 (new joiners) starting fresh from those real numbers.", hi: "दिया है: morning:afternoon students शुरू में 13:9 हैं। 21 students morning से afternoon जाने के बाद, ratio 19:14 हो जाता है। फिर नए students 3:8 ratio में जुड़ते हैं, और final ratio 5:4 हो जाता है। पूछा है: कितने नए students जुड़े। तोड़ें: (1) stage 1 (21 students का move) solve करके असली numbers पाएं, (2) stage 2 (नए joiners) उन असली numbers से नए सिरे से शुरू करके solve करें।" },
+    approach: { en: "Multi-stage ratio problems fall apart if you try to carry an unknown constant through both stages at once. Solve stage one fully — turn the ratio-with-unknown into real numbers — then treat stage two as a completely fresh problem starting from those real numbers.", hi: "Multi-stage ratio problems तब उलझ जाते हैं जब आप एक unknown constant को दोनों stages में एक साथ carry करने की कोशिश करते हैं। Stage one को पूरी तरह solve करें — unknown वाले ratio को असली numbers में बदलें — फिर stage two को उन असली numbers से शुरू करके बिल्कुल नए problem की तरह लें।" },
+    steps: { en: "Step 1 — Let morning=13k, afternoon=9k (stage 1 starting point).\nStep 2 — After 21 move: (13k-21)/(9k+21) = 19/14. Cross-multiply: 14(13k-21) = 19(9k+21) → 182k-294 = 171k+399 → 11k = 693 → k = 63.\nStep 3 — Convert to real numbers: morning = 13(63)-21 = 798, afternoon = 9(63)+21 = 588. Forget k from here — these are now fixed numbers.\nStep 4 — Stage 2: let 3t and 8t join morning and afternoon respectively. (798+3t)/(588+8t) = 5/4.\nStep 5 — Cross-multiply: 4(798+3t) = 5(588+8t) → 3192+12t = 2940+40t → 252 = 28t → t = 9.\nStep 6 — New students joined = 3t + 8t = 11t = 11(9) = 99.", hi: "Step 1 — मान लें morning=13k, afternoon=9k (stage 1 की शुरुआत)।\nStep 2 — 21 students move करने के बाद: (13k-21)/(9k+21) = 19/14। Cross-multiply करें: 14(13k-21) = 19(9k+21) → 182k-294 = 171k+399 → 11k = 693 → k = 63।\nStep 3 — असली numbers में बदलें: morning = 13(63)-21 = 798, afternoon = 9(63)+21 = 588। अब यहाँ से k भूल जाएं — ये अब fixed numbers हैं।\nStep 4 — Stage 2: मान लें 3t और 8t क्रमशः morning और afternoon में जुड़ते हैं। (798+3t)/(588+8t) = 5/4।\nStep 5 — Cross-multiply करें: 4(798+3t) = 5(588+8t) → 3192+12t = 2940+40t → 252 = 28t → t = 9।\nStep 6 — नए जुड़े students = 3t + 8t = 11t = 11(9) = 99।" },
+    calc: { en: "Number of new students who joined = 99.", hi: "नए जुड़े students की संख्या = 99।" }
   },
   {
     id: 7, type: "mcq",
     text: "The ratio of expenditures of Lakshmi and Meenakshi is 2 : 3, and the ratio of income of Lakshmi to expenditure of Meenakshi is 6 : 7. If excess of income over expenditure is saved by Lakshmi and Meenakshi, and the ratio of their savings is 4 : 9, then the ratio of their incomes is",
     options: ["3 : 5", "5 : 6", "2 : 1", "7 : 8"],
     answer: "3 : 5",
-    trick: "Trick: 'savings = income - expenditure' problems with two ratios given — anchor everything to ONE shared variable (here Meenakshi's expenditure = k) since it appears in both given ratios.",
-    explain: "Let Lakshmi's expenditure B=2k, Meenakshi's expenditure D=3k (from B:D=2:3).\nLakshmi's income A: A:D=6:7 → A = 6/7 × 3k = 18k/7.\nLakshmi's saving = A-B = 18k/7 - 2k = 4k/7.\nLet Meenakshi's income = C, saving = C-3k.\nGiven savings ratio (4k/7):(C-3k) = 4:9 → solving gives C = 30k/7.\nIncome ratio A:C = 18k/7 : 30k/7 = 18:30 = 3:5."
+    hook: { en: "Savings = income minus expenditure, but you're given two different ratios touching different pairs — the trick is finding the one variable that appears in both.", hi: "Savings = income घटा expenditure, पर आपको दो अलग ratios दिए गए हैं जो अलग-अलग जोड़ियों को छूते हैं — trick है वो एक variable ढूंढना जो दोनों में मौजूद है।" },
+    breakdown: { en: "Given: expenditure ratio (Lakshmi:Meenakshi = 2:3), an income-to-expenditure ratio across people (Lakshmi's income : Meenakshi's expenditure = 6:7), and a savings ratio (4:9). Asked: ratio of their incomes. Break it into: (1) anchor both given ratios to one shared variable, (2) express each person's saving as income-expenditure, (3) use the savings ratio to solve for the missing income.", hi: "दिया है: expenditure ratio (Lakshmi:Meenakshi = 2:3), लोगों के बीच income-to-expenditure ratio (Lakshmi की income : Meenakshi की expenditure = 6:7), और एक savings ratio (4:9)। पूछा है: उनकी incomes का ratio। तोड़ें: (1) दिए गए दोनों ratios को एक ही shared variable से जोड़ें, (2) हर व्यक्ति की saving को income-expenditure के रूप में लिखें, (3) savings ratio से गायब income निकालें।" },
+    approach: { en: "Notice Meenakshi's expenditure appears in both given ratios (2:3 and 6:7) — that's the shared anchor. Set it as one variable k, express every other quantity (Lakshmi's expenditure, Lakshmi's income) in terms of k, compute Lakshmi's saving directly, then use the savings ratio to solve for Meenakshi's income.", hi: "ध्यान दें Meenakshi की expenditure दोनों दिए गए ratios (2:3 और 6:7) में मौजूद है — यही shared anchor है। इसे एक variable k मानें, बाकी हर quantity (Lakshmi की expenditure, Lakshmi की income) को k के रूप में लिखें, Lakshmi की saving सीधे निकालें, फिर savings ratio से Meenakshi की income निकालें।" },
+    steps: { en: "Step 1 — Anchor to Meenakshi's expenditure: let D = Meenakshi's expenditure = 3k, so Lakshmi's expenditure B = 2k (from B:D = 2:3).\nStep 2 — Use the second ratio (Lakshmi's income : Meenakshi's expenditure = 6:7) to find Lakshmi's income: A = (6/7)×D = (6/7)×3k = 18k/7.\nStep 3 — Compute Lakshmi's saving: A - B = 18k/7 - 2k = 4k/7.\nStep 4 — Let Meenakshi's income = C, her saving = C - 3k. Use the savings ratio: (4k/7) : (C-3k) = 4:9.\nStep 5 — Solve: (4k/7)×9 = 4×(C-3k) → 36k/7 = 4C-12k → C = (36k/7 + 12k)/4 = 30k/7.\nStep 6 — Income ratio A:C = 18k/7 : 30k/7 = 18:30 = 3:5.", hi: "Step 1 — Meenakshi की expenditure से anchor करें: मान लें D = Meenakshi की expenditure = 3k, तो Lakshmi की expenditure B = 2k (B:D = 2:3 से)।\nStep 2 — दूसरे ratio (Lakshmi की income : Meenakshi की expenditure = 6:7) से Lakshmi की income निकालें: A = (6/7)×D = (6/7)×3k = 18k/7।\nStep 3 — Lakshmi की saving निकालें: A - B = 18k/7 - 2k = 4k/7।\nStep 4 — मान लें Meenakshi की income = C, उसकी saving = C - 3k। savings ratio का इस्तेमाल करें: (4k/7) : (C-3k) = 4:9।\nStep 5 — Solve करें: (4k/7)×9 = 4×(C-3k) → 36k/7 = 4C-12k → C = (36k/7 + 12k)/4 = 30k/7।\nStep 6 — Income ratio A:C = 18k/7 : 30k/7 = 18:30 = 3:5।" },
+    calc: { en: "Ratio of their incomes = 3 : 5.", hi: "उनकी incomes का ratio = 3 : 5।" }
   },
   {
     id: 8, type: "mcq",
     text: "A certain amount of money was divided among Pinu, Meena, Rinu and Seema. Pinu received 20% of the total amount and Meena received 40% of the remaining amount. If Seema received 20% less than Pinu, the ratio of the amounts received by Pinu and Rinu is",
     options: ["2 : 1", "1 : 2", "5 : 8", "8 : 5"],
     answer: "5 : 8",
-    trick: "Trick: whenever a problem is pure percentages-of-a-total with no absolute numbers given, assume total = 100 units. Makes every percentage a direct number, no fractions to juggle.",
-    explain: "Assume total = 100 units.\nPinu = 20% of 100 = 20. Remaining = 80.\nMeena = 40% of 80 = 32. Remaining for Rinu+Seema = 48.\nSeema = 20% less than Pinu = 20 - 4 = 16.\nRinu = 48 - 16 = 32.\nPinu : Rinu = 20 : 32 = 5 : 8."
+    hook: { en: "Nothing but percentages of a total, no absolute numbers anywhere — the cheapest move is to invent the total yourself.", hi: "बस total के percentages हैं, कहीं कोई absolute number नहीं — सबसे आसान चाल है खुद total बना लेना।" },
+    breakdown: { en: "Given: an amount split among 4 people using only percentage relationships — Pinu gets 20% of the total, Meena gets 40% of what's left, Seema gets 20% less than Pinu. Asked: ratio of Pinu's amount to Rinu's amount. Break it into: (1) pick a convenient total, (2) work through each person's share in order, (3) find Rinu as the final leftover, (4) form the ratio.", hi: "दिया है: एक amount 4 लोगों में बांटा गया है सिर्फ percentage relationships से — Pinu को total का 20% मिलता है, Meena को बचे हुए का 40%, Seema को Pinu से 20% कम मिलता है। पूछा है: Pinu की amount का Rinu की amount से ratio। तोड़ें: (1) एक सुविधाजनक total चुनें, (2) हर व्यक्ति का हिस्सा क्रम से निकालें, (3) Rinu को आखिरी बचे हुए के रूप में पाएं, (4) ratio बनाएं।" },
+    approach: { en: "When a problem is entirely percentage-of-a-total with zero absolute numbers, the actual total is irrelevant to the final ratio — so pick the easiest possible number, 100, and let every percentage become a direct integer. This removes all fraction arithmetic.", hi: "जब पूरा problem percentage-of-a-total है और कहीं कोई absolute number नहीं, असली total final ratio के लिए मायने नहीं रखता — इसलिए सबसे आसान number, 100 चुनें, और हर percentage सीधे एक integer बन जाएगा। इससे fraction वाला calculation पूरी तरह हट जाता है।" },
+    steps: { en: "Step 1 — Assume total = 100 units.\nStep 2 — Pinu gets 20% of 100 = 20 units. Remaining after Pinu = 80 units.\nStep 3 — Meena gets 40% of the remaining 80 = 32 units. Remaining for Rinu and Seema = 80-32 = 48 units.\nStep 4 — Seema gets 20% less than Pinu: 20 - (20% of 20) = 20 - 4 = 16 units.\nStep 5 — Rinu gets whatever's left of the 48: 48 - 16 = 32 units.\nStep 6 — Ratio Pinu:Rinu = 20:32, which simplifies to 5:8.", hi: "Step 1 — मान लें total = 100 units।\nStep 2 — Pinu को 100 का 20% = 20 units मिलते हैं। Pinu के बाद बचे = 80 units।\nStep 3 — Meena को बचे 80 का 40% = 32 units मिलते हैं। Rinu और Seema के लिए बचे = 80-32 = 48 units।\nStep 4 — Seema को Pinu से 20% कम मिलता है: 20 - (20 का 20%) = 20 - 4 = 16 units।\nStep 5 — Rinu को 48 में से जो बचा वो मिलता है: 48 - 16 = 32 units।\nStep 6 — Ratio Pinu:Rinu = 20:32, जो simplify होकर 5:8 बनता है।" },
+    calc: { en: "Ratio of Pinu's amount to Rinu's amount = 5 : 8.", hi: "Pinu की amount का Rinu की amount से ratio = 5 : 8।" }
   },
   {
     id: 9, type: "mcq",
     text: "The rate of water flow through three pipes A, B and C are in the ratio 4 : 9 : 36. An empty tank can be filled up completely by pipe A in 15 hours. If all the three pipes are used simultaneously to fill up this empty tank, the time, in minutes, required to fill up the entire tank completely is nearest to",
     options: ["73", "78", "76", "71"],
     answer: "73",
-    trick: "Trick: pipes-in-ratio problems — assign rates as 4x, 9x, 36x, find tank capacity from the one pipe you know the full time for, then combined-rate is just addition. Don't find each pipe's individual time separately.",
-    explain: "Rates: A=4x, B=9x, C=36x per hour.\nA fills tank alone in 15 hrs → tank capacity = 15 × 4x = 60x units.\nCombined rate = 4x+9x+36x = 49x units/hr.\nTime together = 60x/49x hours = 60/49 hours ≈ 1.2245 hrs.\nIn minutes: 1.2245 × 60 ≈ 73.47 → nearest to 73."
+    hook: { en: "Three pipes, one ratio of rates — don't compute each pipe's own filling time separately, that's the slow route. Add the rates instead.", hi: "तीन pipes, rates का एक ratio — हर pipe का अपना filling time अलग से मत निकालो, वो धीमा रास्ता है। इसकी बजाय rates जोड़ो।" },
+    breakdown: { en: "Given: flow rates of pipes A, B, C in ratio 4:9:36. Pipe A alone fills the tank in 15 hours. Asked: time for all three together, in minutes. Break it into: (1) assign real rate values using the ratio, (2) find tank capacity from pipe A's known time, (3) add all three rates for the combined rate, (4) divide capacity by combined rate and convert units.", hi: "दिया है: pipes A, B, C की flow rates ratio 4:9:36 में हैं। Pipe A अकेले tank को 15 घंटे में भरता है। पूछा है: तीनों साथ मिलकर कितने minutes में भरेंगे। तोड़ें: (1) ratio से असली rate values रखें, (2) pipe A के जाने-माने time से tank की capacity निकालें, (3) तीनों rates जोड़कर combined rate पाएं, (4) capacity को combined rate से divide करके units बदलें।" },
+    approach: { en: "Assign the ratio to a variable — rates 4x, 9x, 36x per hour. Use the one piece of real-world info (pipe A's 15-hour solo time) to pin down the tank's capacity in terms of x. From there, combined rate is simple addition, and time is just capacity divided by rate.", hi: "ratio को variable में रखें — rates 4x, 9x, 36x प्रति घंटा। असली दुनिया वाली एक जानकारी (pipe A का 15 घंटे का अकेला time) से tank की capacity को x के रूप में तय करें। वहां से combined rate बस जोड़ है, और time बस capacity भाग rate है।" },
+    steps: { en: "Step 1 — Assign rates: A=4x, B=9x, C=36x units/hour.\nStep 2 — Use pipe A's solo time to find capacity: tank = rate × time = 4x × 15 = 60x units.\nStep 3 — Add all three rates for the combined rate: 4x+9x+36x = 49x units/hour.\nStep 4 — Time together = capacity / combined rate = 60x/49x = 60/49 hours ≈ 1.2245 hours.\nStep 5 — Convert to minutes: 1.2245 × 60 ≈ 73.47 minutes, which rounds to the nearest option, 73.", hi: "Step 1 — Rates रखें: A=4x, B=9x, C=36x units/घंटा।\nStep 2 — Pipe A के अकेले time से capacity निकालें: tank = rate × time = 4x × 15 = 60x units।\nStep 3 — तीनों rates जोड़कर combined rate पाएं: 4x+9x+36x = 49x units/घंटा।\nStep 4 — साथ में time = capacity / combined rate = 60x/49x = 60/49 घंटे ≈ 1.2245 घंटे।\nStep 5 — Minutes में बदलें: 1.2245 × 60 ≈ 73.47 minutes, जो nearest option 73 के बराबर है।" },
+    calc: { en: "Time for all three pipes together ≈ 73 minutes.", hi: "तीनों pipes साथ में ≈ 73 minutes लेंगे।" }
   },
   {
     id: 10, type: "tita",
     text: "The ratio of the number of coins in boxes A and B was 17:7. After 108 coins were shifted from box A to box B, this ratio became 37:20. The number of coins that needs to be shifted further from A to B, to make this ratio 1:1, is",
     answer: "272",
-    trick: "Trick: 'shifted further to make ratio 1:1' means split the fixed COMBINED total equally — you don't need to keep re-solving ratios, just find total coins once and halve it.",
-    explain: "Let A=17x, B=7x initially.\nAfter shifting 108: (17x-108)/(7x+108) = 37/20 → solving gives x=76.\nSo total coins = (17+7)×76 = 1824 (this total never changes).\nFor 1:1, each box needs 912.\nCurrent B = 7(76)+108 = 640.\nCoins still to shift from A to B = 912 - 640 = 272."
+    hook: { en: "'Shift further to make it 1:1' is a disguise for 'split the fixed total equally' — find the total once, and the rest is subtraction.", hi: "'और shift करके 1:1 बनाओ' असल में है 'fixed total को बराबर बांटो' का भेस — total एक बार निकालो, बाकी सिर्फ घटाव है।" },
+    breakdown: { en: "Given: coins in box A:B start at 17:7. After 108 coins move from A to B, ratio becomes 37:20. Asked: how many more coins must move from A to B to make the ratio 1:1. Break it into: (1) find the real starting coin counts using the given ratio-change, (2) find the fixed combined total, (3) figure out what 1:1 means for that total, (4) subtract from the current state after the 108-move.", hi: "दिया है: box A:B में coins शुरू में 17:7 हैं। 108 coins A से B जाने के बाद, ratio 37:20 हो जाता है। पूछा है: ratio को 1:1 बनाने के लिए और कितने coins A से B जाने चाहिए। तोड़ें: (1) दिए गए ratio-change से असली starting coin counts निकालें, (2) fixed combined total निकालें, (3) उस total के लिए 1:1 का मतलब समझें, (4) 108 वाले move के बाद की स्थिति से घटाएं।" },
+    approach: { en: "Moving coins between two boxes never changes the combined total — that's the key invariant. Solve the ratio-change equation once to pin down real starting numbers, compute the fixed total, then 1:1 just means splitting that same fixed total in half.", hi: "दो boxes के बीच coins move करने से combined total कभी नहीं बदलता — यही main invariant है। ratio-change वाले equation को एक बार solve करके असली starting numbers तय करें, fixed total निकालें, फिर 1:1 का मतलब है उसी fixed total को आधा-आधा बांटना।" },
+    steps: { en: "Step 1 — Let starting coins be A=17x, B=7x.\nStep 2 — After 108 move: (17x-108)/(7x+108) = 37/20. Cross-multiply: 20(17x-108) = 37(7x+108) → 340x-2160 = 259x+3996 → 81x = 6156 → x = 76.\nStep 3 — Find the fixed combined total: (17+7)×76 = 24×76 = 1824. This total never changes no matter how many coins move.\nStep 4 — For ratio 1:1, each box needs half: 1824/2 = 912.\nStep 5 — Find B's current count (after the 108 move): B = 7(76)+108 = 532+108 = 640.\nStep 6 — Additional coins needed to bring B up to 912: 912 - 640 = 272.", hi: "Step 1 — मान लें शुरुआती coins A=17x, B=7x हैं।\nStep 2 — 108 move के बाद: (17x-108)/(7x+108) = 37/20। Cross-multiply करें: 20(17x-108) = 37(7x+108) → 340x-2160 = 259x+3996 → 81x = 6156 → x = 76।\nStep 3 — fixed combined total निकालें: (17+7)×76 = 24×76 = 1824। कितने भी coins move हों, यह total कभी नहीं बदलता।\nStep 4 — 1:1 ratio के लिए, हर box को आधा चाहिए: 1824/2 = 912।\nStep 5 — B का current count निकालें (108 move के बाद): B = 7(76)+108 = 532+108 = 640।\nStep 6 — B को 912 तक लाने के लिए और कितने coins चाहिए: 912 - 640 = 272।" },
+    calc: { en: "Additional coins to shift from A to B = 272.", hi: "A से B में और shift करने वाले coins = 272।" }
   }
 ];
 
@@ -418,6 +484,10 @@ const ICON_BULB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" st
 const ICON_ARROW_R = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
 const ICON_ALERT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
 const ICON_CLOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>';
+const ICON_PUZZLE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-1.187.144 2.5 2.5 0 0 0-3.114 3.114.98.98 0 0 1-.144 1.187l-1.611 1.611c-.47.47-1.087.706-1.704.706s-1.233-.235-1.704-.706l-1.568-1.568a1.25 1.25 0 0 0-.878-.289c-.322.049-.68.315-.681.68-.001.365.153.72.443.955a2.5 2.5 0 1 1-3.117-3.917.98.98 0 0 0 .12-1.176l-1.53-1.53C2.235 13.233 2 12.617 2 12s.235-1.233.706-1.704l1.611-1.611a.98.98 0 0 1 1.187-.144 2.5 2.5 0 0 0 3.114-3.114.98.98 0 0 1 .144-1.187l1.611-1.611C10.943 2.159 11.383 2 11.883 2s.94.159 1.316.633l1.568 1.568c.23.23.556.338.878.289.322-.049.648-.315.68-.68a1.25 1.25 0 0 0-.443-.955A2.5 2.5 0 1 1 19 6.772a.98.98 0 0 0-.561 1.078"/></svg>';
+const ICON_COMPASS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>';
+const ICON_LIST = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>';
+const ICON_CALC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="14" x2="8.01" y2="14"/><line x1="12" y1="14" x2="12.01" y2="14"/><line x1="16" y1="14" x2="16.01" y2="14"/><line x1="8" y1="18" x2="8.01" y2="18"/><line x1="12" y1="18" x2="12.01" y2="18"/><line x1="16" y1="18" x2="16.01" y2="18"/></svg>';
 
 /* ---------------- State ---------------- */
 let responses = {};      // qid -> answer string
@@ -672,9 +742,33 @@ function renderReview(perQ){
           <span class="a-item">Your answer: <strong>${r.wasAttempted ? r.given : "—"}</strong></span>
           <span class="a-item">Correct answer: <strong>${q.answer}</strong></span>
         </div>
-        <div class="sol-label">Solution</div>
-        <div class="expl">${q.explain}</div>
-        <div class="trick">${ICON_BULB}<span>${q.trick}</span></div>
+
+        <div class="hook-block lang-en-block">${ICON_ARROW_R}<span>${q.hook.en}</span></div>
+        <div class="hook-block lang-hi-block">${ICON_ARROW_R}<span>${q.hook.hi}</span></div>
+
+        <div class="expl-block">
+          <div class="blk-label lang-en-block">${ICON_PUZZLE}Breaking down the question</div>
+          <div class="blk-label lang-hi-block">${ICON_PUZZLE}Question को तोड़कर समझें</div>
+          <div class="blk-body lang-en-block">${q.breakdown.en}</div>
+          <div class="blk-body lang-hi-block">${q.breakdown.hi}</div>
+        </div>
+
+        <div class="expl-block">
+          <div class="blk-label lang-en-block">${ICON_COMPASS}Approach before solving</div>
+          <div class="blk-label lang-hi-block">${ICON_COMPASS}Solve करने से पहले approach</div>
+          <div class="blk-body lang-en-block">${q.approach.en}</div>
+          <div class="blk-body lang-hi-block">${q.approach.hi}</div>
+        </div>
+
+        <div class="expl-block">
+          <div class="blk-label lang-en-block">${ICON_LIST}Step-by-step solution</div>
+          <div class="blk-label lang-hi-block">${ICON_LIST}चरण-दर-चरण हल</div>
+          <div class="blk-body lang-en-block">${q.steps.en}</div>
+          <div class="blk-body lang-hi-block">${q.steps.hi}</div>
+        </div>
+
+        <div class="calc-block lang-en-block">${ICON_CALC}<span>${q.calc.en}</span></div>
+        <div class="calc-block lang-hi-block">${ICON_CALC}<span>${q.calc.hi}</span></div>
       </div>`;
     list.appendChild(item);
   });
@@ -686,6 +780,14 @@ function renderReview(perQ){
 
 function toggleReview(i){
   document.getElementById("rev-"+i).classList.toggle("open");
+}
+
+function setLang(lang){
+  const screen = document.getElementById("resultScreen");
+  screen.classList.toggle("lang-en", lang==="en");
+  screen.classList.toggle("lang-hi", lang==="hi");
+  document.getElementById("langEnBtn").classList.toggle("active", lang==="en");
+  document.getElementById("langHiBtn").classList.toggle("active", lang==="hi");
 }
 
 renderTimer();
