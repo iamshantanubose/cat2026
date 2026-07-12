@@ -177,7 +177,7 @@
 /* ---------------- Question bank (real, verified PYQs) ---------------- */
 const QUESTIONS = [
   {
-    id: 1, source: "CAT 2021 Slot 1 · Q49", type: "mcq",
+    id: 1, type: "mcq",
     text: "The amount Neeta and Geeta together earn in a day equals what Sita alone earns in 6 days. The amount Sita and Neeta together earn in a day equals what Geeta alone earns in 2 days. The ratio of the daily earnings of the one who earns the most to that of the one who earns the least is",
     options: ["3 : 2", "11 : 7", "11 : 3", "7 : 3"],
     answer: "11 : 3",
@@ -185,7 +185,7 @@ const QUESTIONS = [
     explain: "Let daily earnings be n (Neeta), g (Geeta), s (Sita).\nStatement 1: n + g = 6s\nStatement 2: s + n = 2g\nSubtract (2) - (1): s - g = 2g - 6s  →  7s = 3g\nSet g = 7a, so s = 3a.\nFrom n = 6s - g = 18a - 7a = 11a.\nSo earnings are n=11a, g=7a, s=3a → highest:lowest = 11:3."
   },
   {
-    id: 2, source: "CAT 2023 Slot 1 · Q52", type: "mcq",
+    id: 2, type: "mcq",
     text: "A mixture P is formed by removing a certain amount of coffee from a coffee jar and replacing the same amount with cocoa powder. The same amount is again removed from mixture P and replaced with same amount of cocoa powder to form a new mixture Q. If the ratio of coffee and cocoa in the mixture Q is 16 : 9, then the ratio of cocoa in mixture P to that in mixture Q is",
     options: ["1 : 3", "1 : 2", "5 : 9", "4 : 9"],
     answer: "5 : 9",
@@ -193,7 +193,7 @@ const QUESTIONS = [
     explain: "Final ratio coffee:cocoa = 16:9, so assume total = 25 units → coffee=16, cocoa=9 after 2 rounds.\nStart: 25 coffee, 0 cocoa.\nRound 1 removes x units, replaced with cocoa → mixture P has (25-x) coffee, x cocoa.\nRound 2 removes x units again (same fraction leaves), replaced with cocoa.\nSolving (25-x)(1 - x/25) = 16 gives x = 5.\nSo mixture P: coffee=20, cocoa=5. Mixture Q: coffee=16, cocoa=9.\nRatio of cocoa in P to cocoa in Q = 5 : 9."
   },
   {
-    id: 3, source: "CAT 2024 Slot 1 · Q55", type: "mcq",
+    id: 3, type: "mcq",
     text: "In September, the incomes of Kamal, Amal and Vimal are in the ratio 8 : 6 : 5. They rent a house together, and Kamal pays 15%, Amal pays 12% and Vimal pays 18% of their respective incomes to cover the total house rent in that month. In October, the house rent remains unchanged while their incomes increase by 10%, 12% and 15%, respectively. In October, the percentage of their total income that will be paid as house rent, is nearest to",
     options: ["15.18", "13.26", "14.84", "12.75"],
     answer: "13.26",
@@ -201,14 +201,14 @@ const QUESTIONS = [
     explain: "Let incomes = 80X, 60X, 50X.\nSept rent paid = 15%(80X)+12%(60X)+18%(50X) = 12X+7.2X+9X = 28.2X. This is the fixed total rent.\nOct incomes = 88X, 67.2X, 57.5X → total = 212.7X.\nRent is unchanged at 28.2X.\n% of Oct income going to rent = 28.2X / 212.7X ≈ 13.26%."
   },
   {
-    id: 4, source: "CAT 2024 Slot 1 · Q62", type: "tita",
+    id: 4, type: "tita",
     text: "A fruit seller has a total of 187 fruits consisting of apples, mangoes and oranges. The number of apples and mangoes are in the ratio 5 : 2. After she sells 75 apples, 26 mangoes and half of the oranges, the ratio of number of unsold apples to number of unsold oranges becomes 3 : 2. The total number of unsold fruits is",
     answer: "66",
     trick: "Trick: keep apples/mangoes as 5x/2x, let oranges be the leftover (187 - 7x) — you don't need a separate variable for the third quantity when total is fixed.",
     explain: "Apples = 5x, Mangoes = 2x, Oranges = 187 - 7x.\nAfter selling: Apples left = 5x-75, Oranges left = (187-7x)/2.\nGiven (5x-75) : (187-7x)/2 = 3 : 2\n→ 2(5x-75) = 3 × (187-7x)/2 → solving gives x = 21.\nUnsold apples = 30, unsold mangoes = 16, unsold oranges = 20.\nTotal unsold = 30+16+20 = 66."
   },
   {
-    id: 5, source: "CAT 2024 Slot 3 · Q65", type: "mcq",
+    id: 5, type: "mcq",
     text: "Rajesh and Vimal own 20 hectares and 30 hectares of agricultural land, respectively, which are entirely covered by wheat and mustard crops. The cultivation area of wheat and mustard in the land owned by Vimal are in the ratio of 5 : 3. If the total cultivation area of wheat and mustard are in the ratio 11 : 9, then the ratio of cultivation area of wheat and mustard in the land owned by Rajesh is",
     options: ["4 : 3", "7 : 9", "3 : 7", "1 : 1"],
     answer: "7 : 9",
@@ -216,7 +216,7 @@ const QUESTIONS = [
     explain: "Vimal's 30 ha in ratio 5:3 → wheat=18.75, mustard=11.25.\nLet Rajesh's 20 ha split as k:1 → wheat = 20k/(k+1), mustard = 20/(k+1).\nTotal wheat:mustard across both = 11:9.\nTotal wheat = 18.75 + 20k/(k+1), Total mustard = 11.25 + 20/(k+1).\nSetting the ratio to 11:9 and solving gives k = 7/9 → Rajesh's wheat:mustard = 7:9."
   },
   {
-    id: 6, source: "CAT 2025 Slot 1 · Q65", type: "mcq",
+    id: 6, type: "mcq",
     text: "The ratio of the number of students in the morning shift and afternoon shift of a school was 13 : 9. After 21 students moved from the morning shift to the afternoon shift, this ratio became 19 : 14. Next, some new students joined the morning and afternoon shifts in the ratio 3 : 8 and then the ratio of the number of students in the morning shift and the afternoon shift became 5 : 4. The number of new students who joined is",
     options: ["110", "88", "121", "99"],
     answer: "99",
@@ -224,7 +224,7 @@ const QUESTIONS = [
     explain: "Let morning=13k, afternoon=9k.\nAfter shift: (13k-21)/(9k+21) = 19/14 → solving gives k=63.\nSo morning=798, afternoon=588 (real numbers now, forget k).\nLet 3t, 8t join morning and afternoon.\n(798+3t)/(588+8t) = 5/4 → solving gives t=9.\nNew students joined = 3t+8t = 11t = 99."
   },
   {
-    id: 7, source: "CAT 2025 Slot 2 · Q63", type: "mcq",
+    id: 7, type: "mcq",
     text: "The ratio of expenditures of Lakshmi and Meenakshi is 2 : 3, and the ratio of income of Lakshmi to expenditure of Meenakshi is 6 : 7. If excess of income over expenditure is saved by Lakshmi and Meenakshi, and the ratio of their savings is 4 : 9, then the ratio of their incomes is",
     options: ["3 : 5", "5 : 6", "2 : 1", "7 : 8"],
     answer: "3 : 5",
@@ -232,7 +232,7 @@ const QUESTIONS = [
     explain: "Let Lakshmi's expenditure B=2k, Meenakshi's expenditure D=3k (from B:D=2:3).\nLakshmi's income A: A:D=6:7 → A = 6/7 × 3k = 18k/7.\nLakshmi's saving = A-B = 18k/7 - 2k = 4k/7.\nLet Meenakshi's income = C, saving = C-3k.\nGiven savings ratio (4k/7):(C-3k) = 4:9 → solving gives C = 30k/7.\nIncome ratio A:C = 18k/7 : 30k/7 = 18:30 = 3:5."
   },
   {
-    id: 8, source: "CAT 2025 Slot 2 · Q68", type: "mcq",
+    id: 8, type: "mcq",
     text: "A certain amount of money was divided among Pinu, Meena, Rinu and Seema. Pinu received 20% of the total amount and Meena received 40% of the remaining amount. If Seema received 20% less than Pinu, the ratio of the amounts received by Pinu and Rinu is",
     options: ["2 : 1", "1 : 2", "5 : 8", "8 : 5"],
     answer: "5 : 8",
@@ -240,7 +240,7 @@ const QUESTIONS = [
     explain: "Assume total = 100 units.\nPinu = 20% of 100 = 20. Remaining = 80.\nMeena = 40% of 80 = 32. Remaining for Rinu+Seema = 48.\nSeema = 20% less than Pinu = 20 - 4 = 16.\nRinu = 48 - 16 = 32.\nPinu : Rinu = 20 : 32 = 5 : 8."
   },
   {
-    id: 9, source: "CAT 2025 Slot 3 · Q54", type: "mcq",
+    id: 9, type: "mcq",
     text: "The rate of water flow through three pipes A, B and C are in the ratio 4 : 9 : 36. An empty tank can be filled up completely by pipe A in 15 hours. If all the three pipes are used simultaneously to fill up this empty tank, the time, in minutes, required to fill up the entire tank completely is nearest to",
     options: ["73", "78", "76", "71"],
     answer: "73",
@@ -248,7 +248,7 @@ const QUESTIONS = [
     explain: "Rates: A=4x, B=9x, C=36x per hour.\nA fills tank alone in 15 hrs → tank capacity = 15 × 4x = 60x units.\nCombined rate = 4x+9x+36x = 49x units/hr.\nTime together = 60x/49x hours = 60/49 hours ≈ 1.2245 hrs.\nIn minutes: 1.2245 × 60 ≈ 73.47 → nearest to 73."
   },
   {
-    id: 10, source: "CAT 2025 Slot 3 · Q67", type: "tita",
+    id: 10, type: "tita",
     text: "The ratio of the number of coins in boxes A and B was 17:7. After 108 coins were shifted from box A to box B, this ratio became 37:20. The number of coins that needs to be shifted further from A to B, to make this ratio 1:1, is",
     answer: "272",
     trick: "Trick: 'shifted further to make ratio 1:1' means split the fixed COMBINED total equally — you don't need to keep re-solving ratios, just find total coins once and halve it.",
@@ -324,7 +324,7 @@ function refreshPalette(){
 
 function renderQuestion(){
   const q = QUESTIONS[current];
-  document.getElementById("qTag").textContent = q.source + " · " + (q.type==="tita" ? "TITA" : "MCQ");
+  document.getElementById("qTag").textContent = "Question " + (current+1) + " · " + (q.type==="tita" ? "TITA" : "MCQ");
   document.getElementById("qText").textContent = q.text;
   document.getElementById("qProgress").textContent = "Q"+(current+1)+" / "+QUESTIONS.length;
 
@@ -395,7 +395,7 @@ function finishExam(){
     if(wasAttempted) attempted++;
     const isCorrect = wasAttempted && normalize(given)===normalize(q.answer);
     if(isCorrect) correct++;
-    return {id:q.id, source:q.source, given, isCorrect, wasAttempted};
+    return {id:q.id, given, isCorrect, wasAttempted};
   });
 
   const accuracy = attempted>0 ? Math.round((correct/attempted)*100) : 0;
@@ -416,7 +416,7 @@ function finishExam(){
     score: correct,
     total: QUESTIONS.length,
     attempted, accuracy, timeUsedSec,
-    perQuestion: perQ.map(p=>({id:p.id, source:p.source, correct:p.isCorrect, attempted:p.wasAttempted}))
+    perQuestion: perQ.map(p=>({id:p.id, correct:p.isCorrect, attempted:p.wasAttempted}))
   });
 }
 
@@ -450,7 +450,7 @@ function renderReview(perQ){
     item.className = "review-item";
     item.innerHTML = `
       <div class="review-head" onclick="toggleReview(${i})">
-        <div><strong>Q${i+1}.</strong> ${q.source}</div>
+        <div><strong>Question ${i+1}</strong></div>
         <span class="q-status ${statusClass}">${statusText}</span>
       </div>
       <div class="review-body" id="rev-${i}">
