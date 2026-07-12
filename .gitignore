@@ -1,0 +1,5 @@
+.DS_Store
+.claude/settings.local.json
+
+# Copyrighted source PDFs — kept local only, not redistributed via the repo
+*.pdf

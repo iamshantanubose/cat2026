@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ratio &amp; Proportion — 30 Min Sprint</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --ink:#1c2333; --sub:#5b6478;
+    --line:#e4e7ef; --accent:#2f6fed; --accent-soft:#eaf1ff;
+    --good:#1a9e6b; --good-soft:#e6f7ef;
+    --bad:#e0483e; --bad-soft:#fdeceb;
+    --warn:#c98a1a; --warn-soft:#fdf3e2;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.5;
+  }
+  .wrap{max-width:760px; margin:0 auto; padding:28px 18px 60px;}
+  header.top{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; flex-wrap:wrap; gap:10px;}
+  header.top h1{font-size:19px; margin:0;}
+  header.top .tag{font-size:12.5px; color:var(--sub);}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:24px; margin-bottom:18px; box-shadow:0 1px 2px rgba(20,25,40,.03);}
+
+  /* Start screen */
+  #startScreen ul{padding-left:20px; color:var(--sub); font-size:14.5px;}
+  #startScreen li{margin-bottom:6px;}
+  .btn{
+    appearance:none; border:none; cursor:pointer; font-weight:600; font-size:15px;
+    padding:12px 22px; border-radius:10px; transition:transform .05s ease, opacity .15s ease;
+  }
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--accent); color:#fff;}
+  .btn-primary:hover{opacity:.92;}
+  .btn-secondary{background:var(--accent-soft); color:var(--accent);}
+  .btn-ghost{background:transparent; color:var(--sub); border:1px solid var(--line);}
+  .btn-danger{background:var(--bad-soft); color:var(--bad);}
+  .btn:disabled{opacity:.4; cursor:not-allowed;}
+
+  /* Exam bar */
+  #examBar{display:none; position:sticky; top:0; z-index:5; background:var(--bg); padding-top:6px; padding-bottom:10px;}
+  #examBar.active{display:block;}
+  .bar-row{display:flex; justify-content:space-between; align-items:center; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px;}
+  #timer{font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; color:var(--ink);}
+  #timer.low{color:var(--bad);}
+  .meta{font-size:13px; color:var(--sub);}
+
+  /* Palette */
+  #palette{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;}
+  .dot{
+    width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center;
+    font-size:13px; font-weight:600; cursor:pointer; border:1px solid var(--line); background:var(--card); color:var(--sub);
+  }
+  .dot.current{outline:2px solid var(--accent); outline-offset:1px;}
+  .dot.answered{background:var(--accent-soft); color:var(--accent); border-color:var(--accent-soft);}
+
+  /* Question screen */
+  #examScreen{display:none;}
+  #examScreen.active{display:block;}
+  .qtag{font-size:12px; color:var(--accent); font-weight:700; letter-spacing:.02em; text-transform:uppercase; margin-bottom:8px;}
+  .qtext{font-size:16.5px; margin-bottom:18px;}
+  .opt{
+    display:flex; gap:10px; align-items:flex-start; padding:12px 14px; border:1px solid var(--line);
+    border-radius:10px; margin-bottom:10px; cursor:pointer; font-size:15px;
+  }
+  .opt:hover{border-color:var(--accent);}
+  .opt.selected{border-color:var(--accent); background:var(--accent-soft);}
+  .opt .letter{font-weight:700; color:var(--sub); min-width:18px;}
+  .opt.selected .letter{color:var(--accent);}
+  #titaWrap{margin-top:4px;}
+  #titaInput{
+    width:100%; padding:12px 14px; font-size:15px; border:1px solid var(--line); border-radius:10px; background:var(--bg);
+  }
+  #titaWrap .hint{font-size:12.5px; color:var(--sub); margin-top:6px;}
+
+  .navrow{display:flex; justify-content:space-between; margin-top:20px; gap:10px;}
+  .navrow .right{display:flex; gap:10px;}
+
+  /* Results */
+  #resultScreen{display:none;}
+  #resultScreen.active{display:block;}
+  .score-hero{display:flex; gap:18px; flex-wrap:wrap; margin-bottom:6px;}
+  .stat{flex:1; min-width:130px; background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px;}
+  .stat .num{font-size:26px; font-weight:700;}
+  .stat .lbl{font-size:12.5px; color:var(--sub); margin-top:2px;}
+  .signal{padding:14px 16px; border-radius:10px; font-size:14.5px; margin:16px 0; border:1px solid;}
+  .signal.good{background:var(--good-soft); border-color:var(--good); color:#0f6b48;}
+  .signal.warn{background:var(--warn-soft); border-color:var(--warn); color:#8a611a;}
+  .signal.bad{background:var(--bad-soft); border-color:var(--bad); color:#a3352c;}
+
+  .review-item{border:1px solid var(--line); border-radius:12px; margin-bottom:14px; overflow:hidden;}
+  .review-head{padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px; cursor:pointer;}
+  .review-head .q-status{font-size:12px; font-weight:700; padding:3px 9px; border-radius:20px;}
+  .status-correct{background:var(--good-soft); color:var(--good);}
+  .status-wrong{background:var(--bad-soft); color:var(--bad);}
+  .status-skipped{background:var(--warn-soft); color:var(--warn);}
+  .review-body{padding:0 16px 16px; display:none; font-size:14.5px; color:var(--ink);}
+  .review-body.open{display:block;}
+  .review-body .ans-row{margin:6px 0; color:var(--sub); font-size:13.5px;}
+  .review-body .trick{background:var(--accent-soft); color:#1d3f8f; padding:10px 12px; border-radius:8px; margin-top:10px; font-size:13.8px;}
+  .review-body .expl{margin-top:8px; white-space:pre-line;}
+
+  footer{text-align:center; font-size:12px; color:var(--sub); margin-top:28px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Ratio &amp; Proportion</h1>
+      <div class="tag">Topic Sprint · 10 PYQs · CAT 2021&ndash;2025 · Diagnostic mode</div>
+    </div>
+    <div class="tag" id="personaTag">Attempts on this topic: 0</div>
+  </header>
+
+  <!-- START SCREEN -->
+  <div class="card" id="startScreen">
+    <h2 style="margin-top:0;">Before you start</h2>
+    <ul>
+      <li>10 questions, real CAT papers (2021&ndash;2025). Mix of MCQ and TITA (type-in-answer), same as actual exam.</li>
+      <li><strong>30:00 cap</strong>, but stop whenever you feel done &mdash; finishing early is fine, it's a signal, not a penalty.</li>
+      <li>No negative marking here. Attempt what you'd normally attempt, skip what you'd normally skip.</li>
+      <li>After submitting: full breakdown, simplest-form explanation + trick for anything missed.</li>
+    </ul>
+    <button class="btn btn-primary" onclick="startExam()">Start Sprint</button>
+  </div>
+
+  <!-- EXAM BAR -->
+  <div id="examBar">
+    <div class="bar-row">
+      <div id="timer">30:00</div>
+      <div class="meta"><span id="qProgress">Q1 / 10</span> &middot; <span id="answeredCount">0 answered</span></div>
+      <button class="btn btn-danger" onclick="confirmSubmit()">Submit Sprint</button>
+    </div>
+    <div id="palette"></div>
+  </div>
+
+  <!-- EXAM SCREEN -->
+  <div class="card" id="examScreen">
+    <div class="qtag" id="qTag"></div>
+    <div class="qtext" id="qText"></div>
+    <div id="optionsWrap"></div>
+    <div id="titaWrap" style="display:none;">
+      <input type="text" id="titaInput" placeholder="Type your numeric answer" inputmode="decimal">
+      <div class="hint">TITA question &mdash; no options, type the value.</div>
+    </div>
+    <div class="navrow">
+      <button class="btn btn-ghost" id="prevBtn" onclick="nav(-1)">&larr; Previous</button>
+      <div class="right">
+        <button class="btn btn-secondary" onclick="clearCurrent()">Clear response</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nav(1)">Next &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="card" id="resultScreen">
+    <h2 style="margin-top:0;">Sprint complete</h2>
+    <div class="score-hero">
+      <div class="stat"><div class="num" id="rScore">-</div><div class="lbl">Score</div></div>
+      <div class="stat"><div class="num" id="rTime">-</div><div class="lbl">Time used</div></div>
+      <div class="stat"><div class="num" id="rAttempted">-</div><div class="lbl">Attempted</div></div>
+      <div class="stat"><div class="num" id="rAccuracy">-</div><div class="lbl">Accuracy (attempted)</div></div>
+    </div>
+    <div id="signalBox"></div>
+    <div id="reviewList"></div>
+    <button class="btn btn-secondary" onclick="location.reload()">Run another sprint</button>
+  </div>
+
+  <footer>Digital persona logged locally in this browser &middot; Topic: Ratio &amp; Proportion</footer>
+</div>
+
+<script>
+/* ---------------- Question bank (real, verified PYQs) ---------------- */
+const QUESTIONS = [
+  {
+    id: 1, source: "CAT 2021 Slot 1 · Q49", type: "mcq",
+    text: "The amount Neeta and Geeta together earn in a day equals what Sita alone earns in 6 days. The amount Sita and Neeta together earn in a day equals what Geeta alone earns in 2 days. The ratio of the daily earnings of the one who earns the most to that of the one who earns the least is",
+    options: ["3 : 2", "11 : 7", "11 : 3", "7 : 3"],
+    answer: "11 : 3",
+    trick: "Trick: convert word statements straight into two equations (n+g=6s, s+n=2g), subtract to kill one variable, then express everyone in terms of one letter. Word-ratio problems are almost always 'turn sentence into equation' in disguise.",
+    explain: "Let daily earnings be n (Neeta), g (Geeta), s (Sita).\nStatement 1: n + g = 6s\nStatement 2: s + n = 2g\nSubtract (2) - (1): s - g = 2g - 6s  →  7s = 3g\nSet g = 7a, so s = 3a.\nFrom n = 6s - g = 18a - 7a = 11a.\nSo earnings are n=11a, g=7a, s=3a → highest:lowest = 11:3."
+  },
+  {
+    id: 2, source: "CAT 2023 Slot 1 · Q52", type: "mcq",
+    text: "A mixture P is formed by removing a certain amount of coffee from a coffee jar and replacing the same amount with cocoa powder. The same amount is again removed from mixture P and replaced with same amount of cocoa powder to form a new mixture Q. If the ratio of coffee and cocoa in the mixture Q is 16 : 9, then the ratio of cocoa in mixture P to that in mixture Q is",
+    options: ["1 : 3", "1 : 2", "5 : 9", "4 : 9"],
+    answer: "5 : 9",
+    trick: "Trick: 'remove and replace' mixture problems — assume a clean total (here 25 units, since 16+9=25) and track what fraction is removed each round. Don't solve in percentages, solve in units.",
+    explain: "Final ratio coffee:cocoa = 16:9, so assume total = 25 units → coffee=16, cocoa=9 after 2 rounds.\nStart: 25 coffee, 0 cocoa.\nRound 1 removes x units, replaced with cocoa → mixture P has (25-x) coffee, x cocoa.\nRound 2 removes x units again (same fraction leaves), replaced with cocoa.\nSolving (25-x)(1 - x/25) = 16 gives x = 5.\nSo mixture P: coffee=20, cocoa=5. Mixture Q: coffee=16, cocoa=9.\nRatio of cocoa in P to cocoa in Q = 5 : 9."
+  },
+  {
+    id: 3, source: "CAT 2024 Slot 1 · Q55", type: "mcq",
+    text: "In September, the incomes of Kamal, Amal and Vimal are in the ratio 8 : 6 : 5. They rent a house together, and Kamal pays 15%, Amal pays 12% and Vimal pays 18% of their respective incomes to cover the total house rent in that month. In October, the house rent remains unchanged while their incomes increase by 10%, 12% and 15%, respectively. In October, the percentage of their total income that will be paid as house rent, is nearest to",
+    options: ["15.18", "13.26", "14.84", "12.75"],
+    answer: "13.26",
+    trick: "Trick: assign the ratio to real numbers (80X, 60X, 50X) immediately — ratios are only useful once you turn them into actual quantities you can add and compare.",
+    explain: "Let incomes = 80X, 60X, 50X.\nSept rent paid = 15%(80X)+12%(60X)+18%(50X) = 12X+7.2X+9X = 28.2X. This is the fixed total rent.\nOct incomes = 88X, 67.2X, 57.5X → total = 212.7X.\nRent is unchanged at 28.2X.\n% of Oct income going to rent = 28.2X / 212.7X ≈ 13.26%."
+  },
+  {
+    id: 4, source: "CAT 2024 Slot 1 · Q62", type: "tita",
+    text: "A fruit seller has a total of 187 fruits consisting of apples, mangoes and oranges. The number of apples and mangoes are in the ratio 5 : 2. After she sells 75 apples, 26 mangoes and half of the oranges, the ratio of number of unsold apples to number of unsold oranges becomes 3 : 2. The total number of unsold fruits is",
+    answer: "66",
+    trick: "Trick: keep apples/mangoes as 5x/2x, let oranges be the leftover (187 - 7x) — you don't need a separate variable for the third quantity when total is fixed.",
+    explain: "Apples = 5x, Mangoes = 2x, Oranges = 187 - 7x.\nAfter selling: Apples left = 5x-75, Oranges left = (187-7x)/2.\nGiven (5x-75) : (187-7x)/2 = 3 : 2\n→ 2(5x-75) = 3 × (187-7x)/2 → solving gives x = 21.\nUnsold apples = 30, unsold mangoes = 16, unsold oranges = 20.\nTotal unsold = 30+16+20 = 66."
+  },
+  {
+    id: 5, source: "CAT 2024 Slot 3 · Q65", type: "mcq",
+    text: "Rajesh and Vimal own 20 hectares and 30 hectares of agricultural land, respectively, which are entirely covered by wheat and mustard crops. The cultivation area of wheat and mustard in the land owned by Vimal are in the ratio of 5 : 3. If the total cultivation area of wheat and mustard are in the ratio 11 : 9, then the ratio of cultivation area of wheat and mustard in the land owned by Rajesh is",
+    options: ["4 : 3", "7 : 9", "3 : 7", "1 : 1"],
+    answer: "7 : 9",
+    trick: "Trick: split each person's land using their own ratio, add up to match the known combined total ratio, then back-solve for the missing person's split. Classic 'combined ratio, one part known' setup.",
+    explain: "Vimal's 30 ha in ratio 5:3 → wheat=18.75, mustard=11.25.\nLet Rajesh's 20 ha split as k:1 → wheat = 20k/(k+1), mustard = 20/(k+1).\nTotal wheat:mustard across both = 11:9.\nTotal wheat = 18.75 + 20k/(k+1), Total mustard = 11.25 + 20/(k+1).\nSetting the ratio to 11:9 and solving gives k = 7/9 → Rajesh's wheat:mustard = 7:9."
+  },
+  {
+    id: 6, source: "CAT 2025 Slot 1 · Q65", type: "mcq",
+    text: "The ratio of the number of students in the morning shift and afternoon shift of a school was 13 : 9. After 21 students moved from the morning shift to the afternoon shift, this ratio became 19 : 14. Next, some new students joined the morning and afternoon shifts in the ratio 3 : 8 and then the ratio of the number of students in the morning shift and the afternoon shift became 5 : 4. The number of new students who joined is",
+    options: ["110", "88", "121", "99"],
+    answer: "99",
+    trick: "Trick: multi-stage ratio-change problems — solve one stage at a time, convert to real numbers after stage 1 before touching stage 2. Don't try to carry k through both stages symbolically.",
+    explain: "Let morning=13k, afternoon=9k.\nAfter shift: (13k-21)/(9k+21) = 19/14 → solving gives k=63.\nSo morning=798, afternoon=588 (real numbers now, forget k).\nLet 3t, 8t join morning and afternoon.\n(798+3t)/(588+8t) = 5/4 → solving gives t=9.\nNew students joined = 3t+8t = 11t = 99."
+  },
+  {
+    id: 7, source: "CAT 2025 Slot 2 · Q63", type: "mcq",
+    text: "The ratio of expenditures of Lakshmi and Meenakshi is 2 : 3, and the ratio of income of Lakshmi to expenditure of Meenakshi is 6 : 7. If excess of income over expenditure is saved by Lakshmi and Meenakshi, and the ratio of their savings is 4 : 9, then the ratio of their incomes is",
+    options: ["3 : 5", "5 : 6", "2 : 1", "7 : 8"],
+    answer: "3 : 5",
+    trick: "Trick: 'savings = income - expenditure' problems with two ratios given — anchor everything to ONE shared variable (here Meenakshi's expenditure = k) since it appears in both given ratios.",
+    explain: "Let Lakshmi's expenditure B=2k, Meenakshi's expenditure D=3k (from B:D=2:3).\nLakshmi's income A: A:D=6:7 → A = 6/7 × 3k = 18k/7.\nLakshmi's saving = A-B = 18k/7 - 2k = 4k/7.\nLet Meenakshi's income = C, saving = C-3k.\nGiven savings ratio (4k/7):(C-3k) = 4:9 → solving gives C = 30k/7.\nIncome ratio A:C = 18k/7 : 30k/7 = 18:30 = 3:5."
+  },
+  {
+    id: 8, source: "CAT 2025 Slot 2 · Q68", type: "mcq",
+    text: "A certain amount of money was divided among Pinu, Meena, Rinu and Seema. Pinu received 20% of the total amount and Meena received 40% of the remaining amount. If Seema received 20% less than Pinu, the ratio of the amounts received by Pinu and Rinu is",
+    options: ["2 : 1", "1 : 2", "5 : 8", "8 : 5"],
+    answer: "5 : 8",
+    trick: "Trick: whenever a problem is pure percentages-of-a-total with no absolute numbers given, assume total = 100 units. Makes every percentage a direct number, no fractions to juggle.",
+    explain: "Assume total = 100 units.\nPinu = 20% of 100 = 20. Remaining = 80.\nMeena = 40% of 80 = 32. Remaining for Rinu+Seema = 48.\nSeema = 20% less than Pinu = 20 - 4 = 16.\nRinu = 48 - 16 = 32.\nPinu : Rinu = 20 : 32 = 5 : 8."
+  },
+  {
+    id: 9, source: "CAT 2025 Slot 3 · Q54", type: "mcq",
+    text: "The rate of water flow through three pipes A, B and C are in the ratio 4 : 9 : 36. An empty tank can be filled up completely by pipe A in 15 hours. If all the three pipes are used simultaneously to fill up this empty tank, the time, in minutes, required to fill up the entire tank completely is nearest to",
+    options: ["73", "78", "76", "71"],
+    answer: "73",
+    trick: "Trick: pipes-in-ratio problems — assign rates as 4x, 9x, 36x, find tank capacity from the one pipe you know the full time for, then combined-rate is just addition. Don't find each pipe's individual time separately.",
+    explain: "Rates: A=4x, B=9x, C=36x per hour.\nA fills tank alone in 15 hrs → tank capacity = 15 × 4x = 60x units.\nCombined rate = 4x+9x+36x = 49x units/hr.\nTime together = 60x/49x hours = 60/49 hours ≈ 1.2245 hrs.\nIn minutes: 1.2245 × 60 ≈ 73.47 → nearest to 73."
+  },
+  {
+    id: 10, source: "CAT 2025 Slot 3 · Q67", type: "tita",
+    text: "The ratio of the number of coins in boxes A and B was 17:7. After 108 coins were shifted from box A to box B, this ratio became 37:20. The number of coins that needs to be shifted further from A to B, to make this ratio 1:1, is",
+    answer: "272",
+    trick: "Trick: 'shifted further to make ratio 1:1' means split the fixed COMBINED total equally — you don't need to keep re-solving ratios, just find total coins once and halve it.",
+    explain: "Let A=17x, B=7x initially.\nAfter shifting 108: (17x-108)/(7x+108) = 37/20 → solving gives x=76.\nSo total coins = (17+7)×76 = 1824 (this total never changes).\nFor 1:1, each box needs 912.\nCurrent B = 7(76)+108 = 640.\nCoins still to shift from A to B = 912 - 640 = 272."
+  }
+];
+
+/* ---------------- State ---------------- */
+let responses = {};      // qid -> answer string
+let current = 0;
+let timeLeft = 30*60;    // seconds
+let timerHandle = null;
+let startTs = null;
+let submitted = false;
+
+/* ---------------- Persona (localStorage) ---------------- */
+const PERSONA_KEY = "catPersona.ratio_proportion";
+function loadPersona(){ try{ return JSON.parse(localStorage.getItem(PERSONA_KEY)) || []; }catch(e){ return []; } }
+function savePersonaRecord(rec){
+  const all = loadPersona();
+  all.push(rec);
+  localStorage.setItem(PERSONA_KEY, JSON.stringify(all));
+}
+document.getElementById("personaTag").textContent = "Attempts on this topic: " + loadPersona().length;
+
+/* ---------------- Start / Timer ---------------- */
+function startExam(){
+  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("examBar").classList.add("active");
+  document.getElementById("examScreen").classList.add("active");
+  buildPalette();
+  renderQuestion();
+  startTs = Date.now();
+  timerHandle = setInterval(tick, 1000);
+}
+
+function tick(){
+  timeLeft--;
+  if(timeLeft <= 0){ timeLeft = 0; renderTimer(); finishExam(); return; }
+  renderTimer();
+}
+
+function renderTimer(){
+  const m = String(Math.floor(timeLeft/60)).padStart(2,"0");
+  const s = String(timeLeft%60).padStart(2,"0");
+  const el = document.getElementById("timer");
+  el.textContent = m+":"+s;
+  el.classList.toggle("low", timeLeft <= 300);
+}
+
+/* ---------------- Palette / Nav ---------------- */
+function buildPalette(){
+  const p = document.getElementById("palette");
+  p.innerHTML = "";
+  QUESTIONS.forEach((q,i)=>{
+    const d = document.createElement("div");
+    d.className = "dot";
+    d.id = "dot-"+i;
+    d.textContent = i+1;
+    d.onclick = ()=>{ current=i; renderQuestion(); };
+    p.appendChild(d);
+  });
+}
+
+function refreshPalette(){
+  QUESTIONS.forEach((q,i)=>{
+    const d = document.getElementById("dot-"+i);
+    d.classList.toggle("current", i===current);
+    d.classList.toggle("answered", responses[q.id] !== undefined && responses[q.id] !== "");
+  });
+  document.getElementById("answeredCount").textContent = Object.keys(responses).filter(k=>responses[k]!=="").length + " answered";
+}
+
+function renderQuestion(){
+  const q = QUESTIONS[current];
+  document.getElementById("qTag").textContent = q.source + " · " + (q.type==="tita" ? "TITA" : "MCQ");
+  document.getElementById("qText").textContent = q.text;
+  document.getElementById("qProgress").textContent = "Q"+(current+1)+" / "+QUESTIONS.length;
+
+  const optWrap = document.getElementById("optionsWrap");
+  const titaWrap = document.getElementById("titaWrap");
+  optWrap.innerHTML = "";
+
+  if(q.type === "mcq"){
+    titaWrap.style.display = "none";
+    optWrap.style.display = "block";
+    const letters = ["A","B","C","D"];
+    q.options.forEach((opt,i)=>{
+      const row = document.createElement("div");
+      row.className = "opt" + (responses[q.id]===opt ? " selected":"");
+      row.innerHTML = '<span class="letter">'+letters[i]+'</span><span>'+opt+'</span>';
+      row.onclick = ()=>{ responses[q.id]=opt; renderQuestion(); refreshPalette(); };
+      optWrap.appendChild(row);
+    });
+  } else {
+    optWrap.style.display = "none";
+    titaWrap.style.display = "block";
+    const inp = document.getElementById("titaInput");
+    inp.value = responses[q.id] || "";
+    inp.oninput = ()=>{ responses[q.id] = inp.value.trim(); refreshPalette(); };
+  }
+
+  document.getElementById("prevBtn").disabled = current===0;
+  document.getElementById("nextBtn").textContent = (current===QUESTIONS.length-1) ? "Review & Submit" : "Next →";
+  refreshPalette();
+}
+
+function nav(dir){
+  if(current===QUESTIONS.length-1 && dir===1){ confirmSubmit(); return; }
+  current = Math.max(0, Math.min(QUESTIONS.length-1, current+dir));
+  renderQuestion();
+}
+
+function clearCurrent(){
+  const q = QUESTIONS[current];
+  delete responses[q.id];
+  renderQuestion();
+  refreshPalette();
+}
+
+function confirmSubmit(){
+  const answered = Object.keys(responses).filter(k=>responses[k]!=="").length;
+  const unanswered = QUESTIONS.length - answered;
+  const msg = unanswered>0
+    ? unanswered+" question(s) unanswered. Submit anyway?"
+    : "Submit sprint now?";
+  if(confirm(msg)) finishExam();
+}
+
+/* ---------------- Finish / Score ---------------- */
+function finishExam(){
+  if(submitted) return;
+  submitted = true;
+  clearInterval(timerHandle);
+  document.getElementById("examBar").classList.remove("active");
+  document.getElementById("examScreen").classList.remove("active");
+  document.getElementById("resultScreen").classList.add("active");
+
+  const timeUsedSec = 30*60 - timeLeft;
+  let correct=0, attempted=0;
+  const perQ = QUESTIONS.map(q=>{
+    const given = responses[q.id];
+    const wasAttempted = given !== undefined && given !== "";
+    if(wasAttempted) attempted++;
+    const isCorrect = wasAttempted && normalize(given)===normalize(q.answer);
+    if(isCorrect) correct++;
+    return {id:q.id, source:q.source, given, isCorrect, wasAttempted};
+  });
+
+  const accuracy = attempted>0 ? Math.round((correct/attempted)*100) : 0;
+  const minsUsed = Math.floor(timeUsedSec/60);
+  const secsUsed = timeUsedSec%60;
+
+  document.getElementById("rScore").textContent = correct+" / "+QUESTIONS.length;
+  document.getElementById("rTime").textContent = minsUsed+"m "+secsUsed+"s";
+  document.getElementById("rAttempted").textContent = attempted+" / "+QUESTIONS.length;
+  document.getElementById("rAccuracy").textContent = attempted>0 ? accuracy+"%" : "—";
+
+  renderSignal(timeUsedSec, attempted, accuracy);
+  renderReview(perQ);
+
+  savePersonaRecord({
+    date: new Date().toISOString(),
+    topic: "Ratio & Proportion",
+    score: correct,
+    total: QUESTIONS.length,
+    attempted, accuracy, timeUsedSec,
+    perQuestion: perQ.map(p=>({id:p.id, source:p.source, correct:p.isCorrect, attempted:p.wasAttempted}))
+  });
+}
+
+function normalize(s){ return String(s).replace(/\s+/g,"").toLowerCase(); }
+
+function renderSignal(timeUsedSec, attempted, accuracy){
+  const box = document.getElementById("signalBox");
+  const usedFraction = timeUsedSec / (30*60);
+  let cls, text;
+  if(usedFraction < 0.66 && accuracy >= 70 && attempted>=6){
+    cls="good"; text="Finished early with strong accuracy — real mastery signal on this topic, not a rush. Safe to mark this topic 'strong' and move on.";
+  } else if(usedFraction < 0.5 && (accuracy < 50 || attempted < 5)){
+    cls="bad"; text="Finished early but with low accuracy or low attempts — this reads as rushing or disengaging, not mastery. Worth repeating this sprint at normal pace before marking any topic here 'weak' for real.";
+  } else if(accuracy < 50){
+    cls="bad"; text="Full time used, accuracy still low — likely a genuine concept gap here, not a speed issue. Review the explanations below before the next sprint on this topic.";
+  } else {
+    cls="warn"; text="Reasonable accuracy, used most of the time — likely an execution-speed issue rather than a concept gap. Same method, needs to get faster.";
+  }
+  box.innerHTML = '<div class="signal '+cls+'">'+text+'</div>';
+}
+
+function renderReview(perQ){
+  const list = document.getElementById("reviewList");
+  list.innerHTML = "";
+  QUESTIONS.forEach((q,i)=>{
+    const r = perQ[i];
+    const statusClass = !r.wasAttempted ? "status-skipped" : (r.isCorrect ? "status-correct" : "status-wrong");
+    const statusText = !r.wasAttempted ? "Skipped" : (r.isCorrect ? "Correct" : "Wrong");
+
+    const item = document.createElement("div");
+    item.className = "review-item";
+    item.innerHTML = `
+      <div class="review-head" onclick="toggleReview(${i})">
+        <div><strong>Q${i+1}.</strong> ${q.source}</div>
+        <span class="q-status ${statusClass}">${statusText}</span>
+      </div>
+      <div class="review-body" id="rev-${i}">
+        <div>${q.text}</div>
+        <div class="ans-row">Your answer: ${r.wasAttempted ? r.given : "—"} &nbsp;|&nbsp; Correct answer: ${q.answer}</div>
+        <div class="expl">${q.explain}</div>
+        <div class="trick">${q.trick}</div>
+      </div>`;
+    list.appendChild(item);
+    if(!r.isCorrect) document.getElementById("resultScreen").dataset.autoOpen = "1";
+  });
+  // auto-open all wrong/skipped
+  QUESTIONS.forEach((q,i)=>{
+    if(!perQ[i].isCorrect){ document.getElementById("rev-"+i).classList.add("open"); }
+  });
+}
+
+function toggleReview(i){
+  document.getElementById("rev-"+i).classList.toggle("open");
+}
+
+renderTimer();
+</script>
+</body>
+</html>
