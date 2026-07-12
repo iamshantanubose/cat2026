@@ -3,62 +3,177 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CAT 2026 Prep — Login</title>
+<title>CAT 2026 Prep — Sign in</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500;600;700&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#f7f8fb; --card:#ffffff; --ink:#1c2333; --sub:#5b6478;
-    --line:#e4e7ef; --accent:#2f6fed; --accent-soft:#eaf1ff;
-    --bad:#e0483e; --bad-soft:#fdeceb; --radius:14px;
+    --color-primary:#0D9488; --color-primary-dark:#0B7A70; --on-primary:#FFFFFF;
+    --color-accent:#EA580C;
+    --color-bg:#F6FAF9; --color-card:#FFFFFF;
+    --color-fg:#0F172A; --color-sub:#5B6B72;
+    --color-border:#DCEAE7; --color-border-strong:#B9DDD8;
+    --color-danger:#DC2626; --color-danger-soft:#FDECEC;
+    --radius-lg:16px; --radius-md:10px;
+    --shadow-card:0 1px 2px rgba(15,23,42,.04), 0 8px 24px -12px rgba(13,148,136,.18);
   }
   *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  }
   body{
-    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg); color:var(--ink);
+    margin:0; min-height:100dvh; display:flex; align-items:center; justify-content:center;
+    padding:24px;
+    font-family:"Source Sans 3",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:
+      radial-gradient(600px 300px at 15% -5%, rgba(13,148,136,.10), transparent),
+      radial-gradient(500px 260px at 105% 10%, rgba(234,88,12,.07), transparent),
+      var(--color-bg);
+    color:var(--color-fg); line-height:1.5;
   }
+
+  .brand{display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:22px;}
+  .brand .mark{
+    width:36px; height:36px; border-radius:10px; background:var(--color-primary);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .brand .mark svg{width:20px; height:20px;}
+  .brand .word{font-family:"Lexend",sans-serif; font-weight:700; font-size:17px; letter-spacing:-.01em;}
+  .brand .word span{color:var(--color-primary);}
+
   .card{
-    width:100%; max-width:360px; background:var(--card); border:1px solid var(--line);
-    border-radius:var(--radius); padding:28px; box-shadow:0 1px 2px rgba(20,25,40,.03);
+    width:100%; max-width:378px; background:var(--color-card); border:1px solid var(--color-border);
+    border-radius:var(--radius-lg); padding:30px 28px; box-shadow:var(--shadow-card);
   }
-  h1{font-size:19px; margin:0 0 4px;}
-  p.sub{font-size:13px; color:var(--sub); margin:0 0 22px;}
-  label{font-size:13px; font-weight:600; display:block; margin-bottom:6px;}
+  h1{font-family:"Lexend",sans-serif; font-weight:600; font-size:20px; margin:0 0 4px; letter-spacing:-.01em;}
+  p.sub{font-size:14px; color:var(--color-sub); margin:0 0 24px;}
+
+  label{font-size:13.5px; font-weight:600; display:block; margin-bottom:6px; color:var(--color-fg);}
+  .field{margin-bottom:16px;}
+  .input-wrap{position:relative;}
+  .input-wrap svg{
+    position:absolute; left:13px; top:50%; transform:translateY(-50%);
+    width:18px; height:18px; color:var(--color-sub); pointer-events:none;
+  }
   input{
-    width:100%; padding:11px 13px; font-size:15px; border:1px solid var(--line);
-    border-radius:10px; background:var(--bg); margin-bottom:16px;
+    width:100%; padding:12px 13px 12px 40px; font-size:15px; font-family:inherit;
+    border:1.5px solid var(--color-border-strong); border-radius:var(--radius-md);
+    background:var(--color-bg); color:var(--color-fg);
+    transition:border-color 150ms ease, box-shadow 150ms ease;
   }
-  input:focus{outline:2px solid var(--accent); outline-offset:1px;}
-  button{
-    width:100%; padding:12px; font-size:15px; font-weight:600; border:none; border-radius:10px;
-    background:var(--accent); color:#fff; cursor:pointer;
+  input::placeholder{color:#9CAEAB;}
+  input:focus{
+    outline:none; border-color:var(--color-primary);
+    box-shadow:0 0 0 4px rgba(13,148,136,.14);
   }
-  button:disabled{opacity:.6; cursor:not-allowed;}
+  #toggleBtnWrap{position:absolute; right:6px; top:50%; transform:translateY(-50%);}
+  .toggle-pass{
+    background:none; border:none; padding:6px; cursor:pointer; color:var(--color-sub);
+    display:flex; border-radius:6px; width:auto;
+  }
+  .toggle-pass:hover{color:var(--color-fg);}
+  .toggle-pass:focus-visible{outline:2px solid var(--color-primary); outline-offset:1px;}
+  .toggle-pass svg{width:18px; height:18px;}
+
+  button[type="submit"]{
+    width:100%; padding:13px; font-size:15px; font-weight:600; font-family:"Lexend",sans-serif;
+    border:none; border-radius:var(--radius-md); cursor:pointer;
+    background:var(--color-primary); color:var(--on-primary);
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    transition:background-color 150ms ease, transform 80ms ease;
+    margin-top:4px;
+  }
+  button[type="submit"]:hover:not(:disabled){background:var(--color-primary-dark);}
+  button[type="submit"]:active:not(:disabled){transform:scale(.98);}
+  button[type="submit"]:focus-visible{outline:2px solid var(--color-primary); outline-offset:2px;}
+  button[type="submit"]:disabled{opacity:.65; cursor:not-allowed;}
+
+  .spinner{
+    width:16px; height:16px; border-radius:50%;
+    border:2px solid rgba(255,255,255,.4); border-top-color:#fff;
+    animation:spin .7s linear infinite; display:none; flex-shrink:0;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .is-loading .spinner{display:inline-block;}
+  .is-loading .btn-label{opacity:.9;}
+
   .error{
-    display:none; background:var(--bad-soft); color:var(--bad); font-size:13.5px;
-    padding:10px 12px; border-radius:8px; margin-bottom:16px;
+    display:none; align-items:flex-start; gap:9px;
+    background:var(--color-danger-soft); color:var(--color-danger); font-size:13.5px;
+    padding:11px 13px; border-radius:var(--radius-md); margin-bottom:18px; border:1px solid #F6C7C4;
   }
-  .error.show{display:block;}
+  .error.show{display:flex;}
+  .error svg{width:17px; height:17px; flex-shrink:0; margin-top:1px;}
+
+  footer{text-align:center; margin-top:18px; font-size:12.5px; color:var(--color-sub);}
 </style>
 </head>
 <body>
-  <form class="card" id="loginForm">
-    <h1>CAT 2026 Prep</h1>
-    <p class="sub">Sign in to continue your topic sprints.</p>
-    <div class="error" id="errBox">Invalid username or password.</div>
-    <label for="username">Username</label>
-    <input id="username" name="username" autocomplete="username" required>
-    <label for="password">Password</label>
-    <input id="password" name="password" type="password" autocomplete="current-password" required>
-    <button type="submit" id="submitBtn">Sign in</button>
-  </form>
+  <div>
+    <div class="brand">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </span>
+      <div class="word">CAT 2026 <span>Prep</span></div>
+    </div>
+
+    <form class="card" id="loginForm" novalidate>
+      <h1>Sign in</h1>
+      <p class="sub">Continue your topic sprints where you left off.</p>
+
+      <div class="error" id="errBox" role="alert" aria-live="polite">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="errText">Invalid username or password.</span>
+      </div>
+
+      <div class="field">
+        <label for="username">Username</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input id="username" name="username" autocomplete="username" placeholder="your username" required>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input id="password" name="password" type="password" autocomplete="current-password" placeholder="your password" required style="padding-right:42px;">
+          <span id="toggleBtnWrap">
+            <button type="button" class="toggle-pass" id="togglePass" aria-label="Show password" aria-pressed="false">
+              <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </span>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn">
+        <span class="spinner" aria-hidden="true"></span>
+        <span class="btn-label">Sign in</span>
+      </button>
+    </form>
+
+    <footer>Persona stored server-side, keyed to your login.</footer>
+  </div>
 
 <script>
+document.getElementById("togglePass").addEventListener("click", ()=>{
+  const input = document.getElementById("password");
+  const btn = document.getElementById("togglePass");
+  const isPass = input.type === "password";
+  input.type = isPass ? "text" : "password";
+  btn.setAttribute("aria-pressed", String(isPass));
+  btn.setAttribute("aria-label", isPass ? "Hide password" : "Show password");
+});
+
 document.getElementById("loginForm").addEventListener("submit", async (e)=>{
   e.preventDefault();
+  const form = document.getElementById("loginForm");
   const btn = document.getElementById("submitBtn");
   const err = document.getElementById("errBox");
   err.classList.remove("show");
-  btn.disabled = true; btn.textContent = "Signing in...";
+  btn.disabled = true; form.classList.add("is-loading");
 
   const username = document.getElementById("username").value.trim();
   const password = document.getElementById("password").value;
@@ -70,17 +185,19 @@ document.getElementById("loginForm").addEventListener("submit", async (e)=>{
       body: JSON.stringify({ username, password })
     });
     if(!res.ok){
+      document.getElementById("errText").textContent = "Invalid username or password.";
       err.classList.add("show");
-      btn.disabled = false; btn.textContent = "Sign in";
+      btn.disabled = false; form.classList.remove("is-loading");
+      document.getElementById("password").focus();
       return;
     }
     const data = await res.json();
     const params = new URLSearchParams({ u: data.username, t: data.token });
     window.location.href = "/index.html?" + params.toString();
   }catch(e){
-    err.textContent = "Could not reach server. Try again.";
+    document.getElementById("errText").textContent = "Could not reach server. Try again.";
     err.classList.add("show");
-    btn.disabled = false; btn.textContent = "Sign in";
+    btn.disabled = false; form.classList.remove("is-loading");
   }
 });
 </script>
