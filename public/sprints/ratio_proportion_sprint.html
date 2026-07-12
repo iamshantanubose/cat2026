@@ -168,9 +168,10 @@
     <div id="signalBox"></div>
     <div id="reviewList"></div>
     <button class="btn btn-secondary" onclick="location.reload()">Run another sprint</button>
+    <button class="btn btn-ghost" onclick="window.location.href=backHref()">Back to topics</button>
   </div>
 
-  <footer>Digital persona logged locally in this browser &middot; Topic: Ratio &amp; Proportion</footer>
+  <footer>Persona synced to your account &middot; Topic: Ratio &amp; Proportion</footer>
 </div>
 
 <script>
@@ -264,15 +265,43 @@ let timerHandle = null;
 let startTs = null;
 let submitted = false;
 
-/* ---------------- Persona (localStorage) ---------------- */
-const PERSONA_KEY = "catPersona.ratio_proportion";
-function loadPersona(){ try{ return JSON.parse(localStorage.getItem(PERSONA_KEY)) || []; }catch(e){ return []; } }
-function savePersonaRecord(rec){
-  const all = loadPersona();
-  all.push(rec);
-  localStorage.setItem(PERSONA_KEY, JSON.stringify(all));
+/* ---------------- Auth + Persona (server-side, Netlify Blobs) ---------------- */
+const TOPIC_KEY = "ratio_proportion";
+const authParams = new URLSearchParams(window.location.search);
+const USER = authParams.get("u");
+const TOKEN = authParams.get("t");
+if(!USER || !TOKEN){ window.location.href = "/login.html"; }
+
+function backHref(){
+  const u = new URL("/index.html", window.location.href);
+  u.searchParams.set("u", USER);
+  u.searchParams.set("t", TOKEN);
+  return u.pathname + u.search;
 }
-document.getElementById("personaTag").textContent = "Attempts on this topic: " + loadPersona().length;
+
+async function loadPersona(){
+  try{
+    const res = await fetch(`/api/persona-get?token=${encodeURIComponent(TOKEN)}&topic=${TOPIC_KEY}`);
+    if(res.status === 401){ window.location.href = "/login.html"; return []; }
+    if(!res.ok) return [];
+    return await res.json();
+  }catch(e){ return []; }
+}
+
+async function savePersonaRecord(rec){
+  try{
+    await fetch("/api/persona-save", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ token: TOKEN, topic: TOPIC_KEY, record: rec })
+    });
+  }catch(e){ /* non-fatal — result screen already rendered from local calc */ }
+}
+
+(async ()=>{
+  const existing = await loadPersona();
+  document.getElementById("personaTag").textContent = "Attempts on this topic: " + existing.length;
+})();
 
 /* ---------------- Start / Timer ---------------- */
 function startExam(){
@@ -379,7 +408,7 @@ function confirmSubmit(){
 }
 
 /* ---------------- Finish / Score ---------------- */
-function finishExam(){
+async function finishExam(){
   if(submitted) return;
   submitted = true;
   clearInterval(timerHandle);
@@ -410,7 +439,7 @@ function finishExam(){
   renderSignal(timeUsedSec, attempted, accuracy);
   renderReview(perQ);
 
-  savePersonaRecord({
+  await savePersonaRecord({
     date: new Date().toISOString(),
     topic: "Ratio & Proportion",
     score: correct,

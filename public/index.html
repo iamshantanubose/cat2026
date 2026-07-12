@@ -18,9 +18,11 @@
     background:var(--bg); color:var(--ink); line-height:1.5;
   }
   .wrap{max-width:860px; margin:0 auto; padding:36px 18px 60px;}
-  header{margin-bottom:26px;}
+  header{margin-bottom:26px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;}
   header h1{font-size:24px; margin:0 0 6px;}
   header p{color:var(--sub); font-size:14.5px; margin:0;}
+  .who{font-size:13px; color:var(--sub); text-align:right;}
+  .who a{color:var(--accent); text-decoration:none;}
 
   .section-title{font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--sub); margin:28px 0 12px;}
 
@@ -45,8 +47,14 @@
 <body>
 <div class="wrap">
   <header>
-    <h1>CAT 2026 Prep — Topic Sprints</h1>
-    <p>30-min diagnostic sprints, real PYQs (2021&ndash;2025), one topic at a time. Pick a topic to start.</p>
+    <div>
+      <h1>CAT 2026 Prep — Topic Sprints</h1>
+      <p>30-min diagnostic sprints, real PYQs (2021&ndash;2025), one topic at a time. Pick a topic to start.</p>
+    </div>
+    <div class="who">
+      Signed in as <strong id="whoName">&hellip;</strong><br>
+      <a href="/login.html">Sign out</a>
+    </div>
   </header>
 
   <div class="section-title">Quantitative Ability</div>
@@ -58,10 +66,19 @@
   <div class="section-title">Verbal Ability &amp; Reading Comprehension</div>
   <div class="grid" id="varcGrid"></div>
 
-  <footer>Digital persona stored locally in this browser, per topic.</footer>
+  <footer>Persona stored server-side (Netlify Blobs), keyed to your login.</footer>
 </div>
 
 <script>
+const params = new URLSearchParams(window.location.search);
+const USER = params.get("u");
+const TOKEN = params.get("t");
+
+if(!USER || !TOKEN){
+  window.location.href = "/login.html";
+}
+document.getElementById("whoName").textContent = USER;
+
 const TOPICS = {
   qa: [
     { key:"ratio_proportion", name:"Ratio &amp; Proportion", desc:"Ratio-change, mixtures, income splits, pipes", href:"sprints/ratio_proportion_sprint.html", live:true },
@@ -85,18 +102,21 @@ const TOPICS = {
   ]
 };
 
-function personaFor(key){
-  try{ return JSON.parse(localStorage.getItem("catPersona."+key)) || []; }catch(e){ return []; }
+function withAuth(href){
+  const u = new URL(href, window.location.href);
+  u.searchParams.set("u", USER);
+  u.searchParams.set("t", TOKEN);
+  return u.pathname + u.search;
 }
 
-function renderGrid(id, list){
+function renderGrid(id, list, persona){
   const grid = document.getElementById(id);
   list.forEach(t=>{
-    const attempts = personaFor(t.key);
+    const attempts = persona[t.key] || [];
     const last = attempts[attempts.length-1];
     const el = document.createElement(t.live ? "a" : "div");
     el.className = "card " + (t.live ? "live" : "disabled");
-    if(t.live) el.href = t.href;
+    if(t.live) el.href = withAuth(t.href);
     let statLine = "";
     if(t.live && last){
       statLine = `<div class="stat-line">Last: ${last.score}/${last.total} · ${attempts.length} attempt${attempts.length>1?"s":""}</div>`;
@@ -111,9 +131,19 @@ function renderGrid(id, list){
   });
 }
 
-renderGrid("qaGrid", TOPICS.qa);
-renderGrid("dilrGrid", TOPICS.dilr);
-renderGrid("varcGrid", TOPICS.varc);
+async function init(){
+  let persona = {};
+  try{
+    const res = await fetch(`/api/persona-get?token=${encodeURIComponent(TOKEN)}`);
+    if(res.ok) persona = await res.json();
+    else if(res.status === 401) { window.location.href = "/login.html"; return; }
+  }catch(e){ /* backend unreachable — render with no history rather than block */ }
+
+  renderGrid("qaGrid", TOPICS.qa, persona);
+  renderGrid("dilrGrid", TOPICS.dilr, persona);
+  renderGrid("varcGrid", TOPICS.varc, persona);
+}
+init();
 </script>
 </body>
 </html>

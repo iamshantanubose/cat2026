@@ -3,3 +3,9 @@
 
 # Copyrighted source PDFs — kept local only, not redistributed via the repo
 *.pdf
+
+# Local Netlify folder
+.netlify
+
+node_modules
+deno.lock

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAT 2026 Prep — Login</title>
+<style>
+  :root{
+    --bg:#f7f8fb; --card:#ffffff; --ink:#1c2333; --sub:#5b6478;
+    --line:#e4e7ef; --accent:#2f6fed; --accent-soft:#eaf1ff;
+    --bad:#e0483e; --bad-soft:#fdeceb; --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink);
+  }
+  .card{
+    width:100%; max-width:360px; background:var(--card); border:1px solid var(--line);
+    border-radius:var(--radius); padding:28px; box-shadow:0 1px 2px rgba(20,25,40,.03);
+  }
+  h1{font-size:19px; margin:0 0 4px;}
+  p.sub{font-size:13px; color:var(--sub); margin:0 0 22px;}
+  label{font-size:13px; font-weight:600; display:block; margin-bottom:6px;}
+  input{
+    width:100%; padding:11px 13px; font-size:15px; border:1px solid var(--line);
+    border-radius:10px; background:var(--bg); margin-bottom:16px;
+  }
+  input:focus{outline:2px solid var(--accent); outline-offset:1px;}
+  button{
+    width:100%; padding:12px; font-size:15px; font-weight:600; border:none; border-radius:10px;
+    background:var(--accent); color:#fff; cursor:pointer;
+  }
+  button:disabled{opacity:.6; cursor:not-allowed;}
+  .error{
+    display:none; background:var(--bad-soft); color:var(--bad); font-size:13.5px;
+    padding:10px 12px; border-radius:8px; margin-bottom:16px;
+  }
+  .error.show{display:block;}
+</style>
+</head>
+<body>
+  <form class="card" id="loginForm">
+    <h1>CAT 2026 Prep</h1>
+    <p class="sub">Sign in to continue your topic sprints.</p>
+    <div class="error" id="errBox">Invalid username or password.</div>
+    <label for="username">Username</label>
+    <input id="username" name="username" autocomplete="username" required>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+    <button type="submit" id="submitBtn">Sign in</button>
+  </form>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const btn = document.getElementById("submitBtn");
+  const err = document.getElementById("errBox");
+  err.classList.remove("show");
+  btn.disabled = true; btn.textContent = "Signing in...";
+
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+
+  try{
+    const res = await fetch("/api/auth", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ username, password })
+    });
+    if(!res.ok){
+      err.classList.add("show");
+      btn.disabled = false; btn.textContent = "Sign in";
+      return;
+    }
+    const data = await res.json();
+    const params = new URLSearchParams({ u: data.username, t: data.token });
+    window.location.href = "/index.html?" + params.toString();
+  }catch(e){
+    err.textContent = "Could not reach server. Try again.";
+    err.classList.add("show");
+    btn.disabled = false; btn.textContent = "Sign in";
+  }
+});
+</script>
+</body>
+</html>
