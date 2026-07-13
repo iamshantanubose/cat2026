@@ -1982,10 +1982,11 @@ function confirmLeave(){
 }
 
 /* ═══ INIT ═══ */
+renderMap();renderXP();renderStats();renderTimer();
 (async()=>{
   const ex=await loadPersona();
   document.getElementById("personaTagText").textContent="Attempts: "+ex.length;
-  updateStreak();renderXP();renderStats();renderMap();renderTimer();
+  updateStreak();renderMap();renderXP();renderStats();
 })();
 </script>
 </body>
