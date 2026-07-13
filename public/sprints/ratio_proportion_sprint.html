@@ -1712,7 +1712,7 @@ const LEVELS=[
 ];
 const SKEY="cat_rp_progress";
 
-function loadP(){try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}return{xp:0,sets:[],explored:[],read:[],streak:0,lastDate:null,attempts:{}};}
+function loadP(){try{const r=localStorage.getItem(SKEY);if(r)return JSON.parse(r);}catch(e){}return{xp:0,sets:[],explored:[],read:[],done:[],streak:0,lastDate:null,attempts:{}};}
 function saveP(p){localStorage.setItem(SKEY,JSON.stringify(p));}
 function getLevel(xp){let l=LEVELS[0];for(let i=LEVELS.length-1;i>=0;i--)if(xp>=LEVELS[i].min){l=LEVELS[i];break;}const idx=LEVELS.indexOf(l);const nx=idx<LEVELS.length-1?LEVELS[idx+1]:null;return{...l,level:idx+1,pct:nx?Math.min(100,((xp-l.min)/(nx.min-l.min))*100):100};}
 
@@ -1883,6 +1883,7 @@ async function finishExam(){
   let xpA=attempted*XP_ATTEMPT,xpC=correct*XP_CORRECT,xpS=0;
   const p=loadP();
   p.attempts["s"+activeSet]=(p.attempts["s"+activeSet]||0)+1;
+  perQ.forEach(q=>{if(q.wasAttempted){const qk="s"+activeSet+"_q"+q.id;if(!p.done.includes(qk)){p.done.push(qk);}}});
   const allDone=attempted===qs.length;
   if(allDone&&!p.sets.includes(activeSet)){p.sets.push(activeSet);xpS=XP_SET;}
   p.xp+=xpA+xpC+xpS;saveP(p);
