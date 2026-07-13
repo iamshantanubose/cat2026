@@ -113,6 +113,14 @@
 
   footer{text-align:center; font-size:12.5px; color:var(--color-sub-2); margin-top:48px; display:flex; align-items:center; justify-content:center; gap:6px;}
   footer svg{width:13px; height:13px;}
+
+  .hero{
+    background:linear-gradient(135deg, var(--color-primary) 0%, #059669 100%);
+    border-radius:var(--radius-lg); padding:40px 28px; margin-bottom:32px;
+    color:#fff; text-align:center; box-shadow:0 8px 24px -6px rgba(13,148,136,.25);
+  }
+  .hero-quote{font-size:18px; font-weight:600; line-height:1.5; margin:0 0 12px; letter-spacing:-.01em;}
+  .hero-meta{font-size:13px; opacity:.85;}
 </style>
 </head>
 <body>
@@ -133,6 +141,11 @@
         Sign out
       </a>
     </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-quote" id="heroQuote">Loading motivation...</div>
+    <div class="hero-meta" id="heroMeta"></div>
   </div>
 
   <div class="intro">
@@ -241,7 +254,36 @@ function renderGrid(id, list, persona){
   });
 }
 
+const DAILY_QUOTES = [
+  "Every problem is an opportunity to learn. Embrace it.",
+  "Success is not final, failure is not fatal. Keep going.",
+  "The only way to do great work is to love what you do.",
+  "Believe in yourself. You are closer than you think.",
+  "Progress over perfection. Small steps win races.",
+  "Your future self is watching you right now. Make them proud.",
+  "Hard work beats talent when talent is lazy.",
+  "Mistakes are proof you're trying. Learn and move on.",
+  "Focus on what you can control. Let go of the rest.",
+  "Every day is a fresh start. Make it count."
+];
+
+function getDailyQuote(){
+  const today = new Date();
+  const dayOfYear = Math.floor((today - new Date(today.getFullYear(),0,0)) / 86400000);
+  const quote = DAILY_QUOTES[dayOfYear % DAILY_QUOTES.length];
+  const month = today.toLocaleString('default', {month:'short'});
+  const date = today.getDate();
+  return {quote, date: `${month} ${date}, ${today.getFullYear()}`};
+}
+
+function renderHero(){
+  const {quote, date} = getDailyQuote();
+  document.getElementById("heroQuote").textContent = quote;
+  document.getElementById("heroMeta").textContent = `Today's motivation • ${date}`;
+}
+
 async function init(){
+  renderHero();
   let persona = {};
   try{
     const res = await fetch(`/api/persona-get?token=${encodeURIComponent(TOKEN)}`);

@@ -329,9 +329,12 @@
         <div class="tag" id="topTag">Question Sets · CAT PYQs</div>
       </div>
     </div>
-    <div class="tag" id="personaTag">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
-      <span id="personaTagText">Loading…</span>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <button class="btn btn-ghost btn-sm" onclick="confirmLeave()" title="Back to home">← Home</button>
+      <div class="tag" id="personaTag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+        <span id="personaTagText">Loading…</span>
+      </div>
     </div>
   </header>
 
@@ -1968,6 +1971,13 @@ function setQLang(i,lang){
   const it=document.getElementById("ri-"+i);it.classList.toggle("lang-en",lang==="en");it.classList.toggle("lang-hi",lang==="hi");
   document.getElementById("enBtn-"+i).classList.toggle("active",lang==="en");
   document.getElementById("hiBtn-"+i).classList.toggle("active",lang==="hi");
+}
+
+function confirmLeave(){
+  if(activeSet>=0 || document.getElementById("examScreen").style.display!=="none"){
+    if(!confirm("Are you sure you want to leave? Your progress is saved, but this exam will end."))return;
+  }
+  window.location.href="/";
 }
 
 /* ═══ INIT ═══ */
